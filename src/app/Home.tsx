@@ -1,10 +1,11 @@
 import { StackRoutesProps } from "@/routes/StackRoutes";
-import { Button, Text, View } from "react-native";
+import { fontFamily } from "@/theme";
+import { Button, StyleSheet, Text, View } from "react-native";
 
 export function Home({ navigation }: StackRoutesProps<"home">) {
   return (
     <View>
-      <Text>Home Screen</Text>
+      <Text style={styles.title}>Home Screen</Text>
 
       <Button title="Budget" onPress={() => navigation.navigate("budget")} />
 
@@ -15,3 +16,8 @@ export function Home({ navigation }: StackRoutesProps<"home">) {
     </View>
   );
 }
+
+
+const styles = StyleSheet.create({
+  title: fontFamily.titleLg
+})
