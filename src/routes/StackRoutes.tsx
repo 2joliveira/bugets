@@ -5,7 +5,7 @@ import {
 import { Home, Budget, BudgetDetails } from "@/app";
 import { colors, fontFamily } from "@/theme";
 
-type StackRoutesList = {
+export type StackRoutesList = {
   home: undefined;
   budget: undefined;
   budgetDetails: { id: string };
