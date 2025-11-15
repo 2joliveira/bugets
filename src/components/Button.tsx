@@ -13,7 +13,7 @@ type ButtonProps = TouchableOpacityProps & {
   variant: "primary" | "secondary" | "destructive";
 };
 
-export function Button({ icon, text, variant }: ButtonProps) {
+export function Button({ icon, text, variant, ...props }: ButtonProps) {
   const variants = {
     primary: { ...styles.primary },
     secondary: {},
@@ -27,7 +27,7 @@ export function Button({ icon, text, variant }: ButtonProps) {
   };
 
   return (
-    <TouchableOpacity style={{ ...styles.container, ...variants[variant] }}>
+    <TouchableOpacity {...props} style={{ ...styles.container, ...variants[variant] }}>
       {icon && <MaterialIcons name={icon} size={24} color={colors.white} />}
       {text && (
         <Text style={{ ...styles.text, ...variantsText[variant] }}>{text}</Text>
