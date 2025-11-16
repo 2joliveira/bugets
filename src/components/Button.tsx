@@ -16,19 +16,30 @@ type ButtonProps = TouchableOpacityProps & {
 export function Button({ icon, text, variant, ...props }: ButtonProps) {
   const variants = {
     primary: { ...styles.primary },
-    secondary: {},
+    secondary: { ...styles.secondary },
     destructive: {},
   };
 
   const variantsText = {
     primary: { ...styles.primaryText },
-    secondary: {},
+    secondary: { ...styles.secondaryText },
     destructive: {},
   };
 
+  const iconColor = {
+    primary: colors.white,
+    secondary: colors.purple.base,
+    destructive: colors.danger.base,
+  };
+
   return (
-    <TouchableOpacity {...props} style={{ ...styles.container, ...variants[variant] }}>
-      {icon && <MaterialIcons name={icon} size={24} color={colors.white} />}
+    <TouchableOpacity
+      {...props}
+      style={{ ...styles.container, ...variants[variant] }}
+    >
+      {icon && (
+        <MaterialIcons name={icon} size={24} color={iconColor[variant]} />
+      )}
       {text && (
         <Text style={{ ...styles.text, ...variantsText[variant] }}>{text}</Text>
       )}
@@ -41,7 +52,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -54,7 +64,15 @@ const styles = StyleSheet.create({
   primary: {
     backgroundColor: colors.purple.base,
   },
+  secondary: {
+    backgroundColor: colors.gray[100],
+    borderWidth: 1,
+    borderColor: colors.gray[300],
+  },
   primaryText: {
     color: colors.white,
+  },
+  secondaryText: {
+    color: colors.purple.base,
   },
 });
