@@ -50,8 +50,7 @@ export function Button({ icon, text, variant, ...props }: ButtonProps) {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 50,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    padding: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
