@@ -28,7 +28,7 @@ export function InputText({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 48,
+    height: 50,
     paddingHorizontal: 15,
     backgroundColor: colors.gray[100],
     borderWidth: 1,

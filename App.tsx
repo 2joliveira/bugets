@@ -21,5 +21,9 @@ export default function App() {
     );
   }
 
+  if (__DEV__) {
+    require("./reactotronConfig");
+  }
+
   return <Routes />;
 }

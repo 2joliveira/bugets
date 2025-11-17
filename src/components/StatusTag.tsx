@@ -1,13 +1,49 @@
+import { STATUS_OPTIONS } from "@/app";
 import { colors, fontFamily } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-export function StatusTag() {
-  return (
-    <View style={styles.container}>
-      <MaterialIcons name="circle" size={10} color={colors.success.base} />
+type StatusType = (typeof STATUS_OPTIONS)[number];
 
-      <Text style={styles.title}>Aprovado</Text>
+export function StatusTag({ status }: { status: StatusType }) {
+  const status_info = {
+    success: {
+      text: "Aprovado",
+      color: colors.success.dark,
+      iconColor: colors.success.base,
+      backgroundColor: colors.success.light,
+    },
+    recused: {
+      text: "Recusado",
+      color: colors.danger.dark,
+      iconColor: colors.danger.base,
+      backgroundColor: colors.danger.light,
+    },
+    draft: {
+      text: "Rascunho",
+      color: colors.gray[500],
+      iconColor: colors.gray[400],
+      backgroundColor: colors.gray[300],
+    },
+    sent: {
+      text: "Enviado",
+      color: colors.info.dark,
+      iconColor: colors.info.base,
+      backgroundColor: colors.info.light,
+    },
+  };
+
+  return (
+    <View style={[styles.container, status_info[status]]}>
+      <MaterialIcons
+        name="circle"
+        size={10}
+        color={status_info[status].iconColor}
+      />
+
+      <Text style={[styles.title, status_info[status]]}>
+        {status_info[status].text}
+      </Text>
     </View>
   );
 }
@@ -20,11 +56,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 8,
-    backgroundColor: colors.success.light,
     borderRadius: 6,
   },
   title: {
     ...fontFamily.titleXs,
-    color: colors.success.dark,
   },
 });
