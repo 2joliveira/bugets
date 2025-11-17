@@ -1,7 +1,8 @@
 import { Button } from "@/components";
+import { InputCheckBox } from "@/components/InputCheckBox";
 import { colors, fontFamily } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   View,
@@ -13,16 +14,21 @@ import {
   Text,
   Pressable,
 } from "react-native";
+import { STATUS_OPTIONS } from "..";
 
 const { height } = Dimensions.get("window");
 
-type Props = {
+interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
 };
 
-export function FilterModal({ visible, onClose }: Props) {
+export function FilterModal({ visible, onClose }: FilterModalProps) {
   const translateY = useRef(new Animated.Value(height)).current;
+
+  const [selectedOption, setSelectedOption] = useState<
+    (typeof STATUS_OPTIONS)[number] | null
+  >(null);
 
   useEffect(() => {
     if (visible) open();
@@ -60,8 +66,13 @@ export function FilterModal({ visible, onClose }: Props) {
           </Pressable>
         </View>
 
-        <ScrollView contentContainerStyle={{ padding: 20, flex: 1 }}>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 20, flex: 1 }}>
           <Text style={styles.section}>Status</Text>
+          <InputCheckBox
+            options={STATUS_OPTIONS}
+            selectedOption={selectedOption}
+            setOption={setSelectedOption}
+          />
 
           <Text style={styles.section}>Ordenação</Text>
         </ScrollView>
@@ -106,6 +117,7 @@ const styles = StyleSheet.create({
   section: {
     ...fontFamily.textXs,
     color: colors.gray[500],
+    marginVertical: 20,
   },
   footer: {
     flexDirection: "row",

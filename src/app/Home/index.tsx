@@ -5,6 +5,8 @@ import { BudgetCard } from "./components";
 import { FilterModal } from "./components/FilterModal";
 import { useState } from "react";
 
+export const STATUS_OPTIONS = ["success", "recused"];
+
 export function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
