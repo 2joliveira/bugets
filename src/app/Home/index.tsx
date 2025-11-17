@@ -5,7 +5,7 @@ import { BudgetCard } from "./components";
 import { FilterModal } from "./components/FilterModal";
 import { useState } from "react";
 
-export const STATUS_OPTIONS = ["success", "recused"];
+export const STATUS_OPTIONS = ["success", "recused", "draft", "sent"] as const;
 
 export function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -24,11 +24,11 @@ export function Home() {
       </View>
 
       <View style={styles.budgetslist}>
-        <BudgetCard />
-        <BudgetCard />
-        <BudgetCard />
-        <BudgetCard />
-        <BudgetCard />
+        <BudgetCard status="success" />
+        <BudgetCard status="recused" />
+        <BudgetCard status="sent" />
+        <BudgetCard status="draft" />
+        <BudgetCard status="success" />
       </View>
 
       {isOpenModal && (

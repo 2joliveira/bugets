@@ -5,7 +5,7 @@ import { STATUS_OPTIONS } from "@/app";
 import { MaterialIcons } from "@expo/vector-icons";
 
 interface InputCheckBoxProps {
-  options: (typeof STATUS_OPTIONS)[number][];
+  options: readonly (typeof STATUS_OPTIONS)[number][];
   selectedOption: (typeof STATUS_OPTIONS)[number] | null;
   setOption: (option: (typeof STATUS_OPTIONS)[number]) => void;
 }
@@ -41,7 +41,7 @@ export function InputCheckBox({
               <MaterialIcons name="check" color={colors.white} size={16} />
             )}
           </View>
-          <StatusTag />
+          <StatusTag status={option} />
         </TouchableOpacity>
       ))}
     </View>

@@ -1,15 +1,24 @@
 import { StatusTag } from "@/components/StatusTag";
 import { colors, fontFamily } from "@/theme";
 import { StyleSheet, Text, View } from "react-native";
+import { STATUS_OPTIONS } from "..";
 
-export function BudgetCard() {
+
+
+type StatusType = (typeof STATUS_OPTIONS)[number];
+
+interface BudgetCardProps {
+  status: StatusType;
+}
+
+export function BudgetCard({ status }: BudgetCardProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
         Desenvolvimento de aplicativo de loja online
       </Text>
       <View style={styles.status}>
-        <StatusTag />
+        <StatusTag status={status} />
       </View>
       <View style={styles.infos}>
         <Text style={styles.subtitle}>Soluções Tecnológicas Beta</Text>
@@ -66,5 +75,5 @@ const styles = StyleSheet.create({
   price: {
     ...fontFamily.titleMd,
     color: colors.gray[700],
-  }
+  },
 });
