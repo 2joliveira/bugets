@@ -1,5 +1,4 @@
-import { Button } from "@/components";
-import { InputCheckBox } from "@/components/InputCheckBox";
+import { Button, InputCheckBox, InputRadio } from "@/components";
 import { colors, fontFamily } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useState } from "react";
@@ -21,14 +20,29 @@ const { height } = Dimensions.get("window");
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
+}
+
+export const ORDER_OPTIONS = {
+  most_recent: "Mais recente",
+  oldest: "Mais antigo",
+  higher_value: "Maior valor",
+  lowest_value: "Menor valor",
 };
+
+type OrderOptionKeys = keyof typeof ORDER_OPTIONS;
+
+export type OrderOptionValue = (typeof ORDER_OPTIONS)[OrderOptionKeys];
 
 export function FilterModal({ visible, onClose }: FilterModalProps) {
   const translateY = useRef(new Animated.Value(height)).current;
 
-  const [selectedOption, setSelectedOption] = useState<
+  const [selectedStatus, setSelectedStatus] = useState<
     (typeof STATUS_OPTIONS)[number] | null
   >(null);
+
+  const [selectedOrder, setSelectedOrder] = useState<OrderOptionValue | null>(
+    null
+  );
 
   useEffect(() => {
     if (visible) open();
@@ -70,11 +84,16 @@ export function FilterModal({ visible, onClose }: FilterModalProps) {
           <Text style={styles.section}>Status</Text>
           <InputCheckBox
             options={STATUS_OPTIONS}
-            selectedOption={selectedOption}
-            setOption={setSelectedOption}
+            selectedOption={selectedStatus}
+            setOption={setSelectedStatus}
           />
 
           <Text style={styles.section}>Ordenação</Text>
+          <InputRadio
+            options={ORDER_OPTIONS}
+            selectedOption={selectedOrder}
+            setOption={setSelectedOrder}
+          />
         </ScrollView>
 
         <View style={styles.footer}>
