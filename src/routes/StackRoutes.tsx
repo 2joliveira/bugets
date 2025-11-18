@@ -23,7 +23,7 @@ export function StackRoutes() {
       screenOptions={{
         headerBackVisible: true,
         headerStyle: {
-          backgroundColor: colors.gray[200],
+          backgroundColor: colors.white,
         },
         headerShadowVisible: false,
         headerTintColor: colors.gray[700],

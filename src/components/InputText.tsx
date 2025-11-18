@@ -14,11 +14,11 @@ export function InputText({
 }: InputTextProps) {
   return (
     <View style={styles.container}>
-      <MaterialIcons name={icon} size={20} color={colors.gray[500]} />
+      {icon && <MaterialIcons name={icon} size={20} color={colors.gray[500]} />}
       <TextInput
         placeholder={placeholder}
         placeholderTextColor={colors.gray[500]}
-        style={styles.input}
+        style={{ width: icon ? "76%" : "100%" }}
         {...props}
       />
     </View>
@@ -27,8 +27,7 @@ export function InputText({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    height: 50,
+    maxHeight: 50,
     paddingHorizontal: 15,
     backgroundColor: colors.gray[100],
     borderWidth: 1,
@@ -38,8 +37,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     gap: 8,
-  },
-  input: {
-    flex: 1
   },
 });
