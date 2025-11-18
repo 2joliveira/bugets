@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { colors } from "@/theme";
 import { InputCheckBox, InputText } from "@/components";
 import { STATUS_OPTIONS } from "../Home";
-import { InfosCard, ServiceInfos } from "./components";
+import { InfosCard, Investments, ServiceInfos } from "./components";
 
 const serviceMock = [
   {
@@ -26,32 +26,38 @@ export function Budget() {
   >(null);
 
   return (
-    <View style={styles.container}>
-      <InfosCard title="Informações gerais" icon="storefront">
-        <View style={{ padding: 20, gap: 12 }}>
-          <InputText icon="search" placeholder="Título" />
-          <InputText icon="search" placeholder="Cliente" />
-        </View>
-      </InfosCard>
+    <ScrollView>
+      <View style={styles.container}>
+        <InfosCard title="Informações gerais" icon="storefront">
+          <View style={styles.content}>
+            <InputText icon="search" placeholder="Título" />
+            <InputText icon="search" placeholder="Cliente" />
+          </View>
+        </InfosCard>
 
-      <InfosCard title="Status" icon="local-offer">
-        <View style={{ padding: 20, gap: 12 }}>
-          <InputCheckBox
-            options={STATUS_OPTIONS}
-            selectedOption={selectedStatus}
-            setOption={setSelectedStatus}
-          />
-        </View>
-      </InfosCard>
+        <InfosCard title="Status" icon="local-offer">
+          <View style={styles.content}>
+            <InputCheckBox
+              options={STATUS_OPTIONS}
+              selectedOption={selectedStatus}
+              setOption={setSelectedStatus}
+            />
+          </View>
+        </InfosCard>
 
-      <InfosCard title="Serviços inclusos" icon="text-snippet">
-        <View style={{ padding: 20, gap: 16 }}>
-          {serviceMock.map((service) => (
-            <ServiceInfos key={`service-${service.title}`} {...service} />
-          ))}
-        </View>
-      </InfosCard>
-    </View>
+        <InfosCard title="Serviços inclusos" icon="text-snippet">
+          <View style={styles.content}>
+            {serviceMock.map((service) => (
+              <ServiceInfos key={`service-${service.title}`} {...service} />
+            ))}
+          </View>
+        </InfosCard>
+
+        <InfosCard title="Investimentos" icon="credit-card">
+          <Investments />
+        </InfosCard>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -63,5 +69,9 @@ const styles = StyleSheet.create({
     borderTopColor: colors.gray[300],
     backgroundColor: colors.white,
     gap: 20,
+  },
+  content: {
+    padding: 20,
+    gap: 12,
   },
 });
