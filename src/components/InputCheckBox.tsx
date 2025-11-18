@@ -3,6 +3,7 @@ import { StatusTag } from "./StatusTag";
 import { colors } from "@/theme";
 import { STATUS_OPTIONS } from "@/app";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 
 interface InputCheckBoxProps {
   options: readonly (typeof STATUS_OPTIONS)[number][];
@@ -15,8 +16,19 @@ export function InputCheckBox({
   selectedOption,
   setOption,
 }: InputCheckBoxProps) {
+  const { name } = useRoute();
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        name === "budget" && {
+          height: 80,
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-around",
+        },
+      ]}
+    >
       {options.map((option) => (
         <TouchableOpacity
           key={option}
@@ -53,6 +65,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   option: {
+    width: "60%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
