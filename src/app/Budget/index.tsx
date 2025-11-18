@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 import { colors } from "@/theme";
-import { InputCheckBox, InputText } from "@/components";
+import { Button, InputCheckBox, InputText } from "@/components";
 import { STATUS_OPTIONS } from "../Home";
 import { InfosCard, Investments, ServiceInfos } from "./components";
 
@@ -51,11 +51,20 @@ export function Budget() {
               <ServiceInfos key={`service-${service.title}`} {...service} />
             ))}
           </View>
+
+          <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
+            <Button variant="secondary" text="Adicionar serviço" icon="add" />
+          </View>
         </InfosCard>
 
         <InfosCard title="Investimentos" icon="credit-card">
           <Investments />
         </InfosCard>
+      </View>
+
+      <View style={styles.footer}>
+        <Button variant="secondary" text="Cancelar" />
+        <Button variant="primary" text="Salvar" icon="check" />
       </View>
     </ScrollView>
   );
@@ -72,6 +81,16 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    gap: 12,
+  },
+  footer: {
+    height: 100,
+    backgroundColor: colors.white,
+    borderTopWidth: 1,
+    borderColor: colors.gray[200],
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 12,
   },
 });

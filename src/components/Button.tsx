@@ -35,7 +35,7 @@ export function Button({ icon, text, variant, ...props }: ButtonProps) {
   return (
     <TouchableOpacity
       {...props}
-      style={{ ...styles.container, ...variants[variant] }}
+      style={[ styles.container, variants[variant], !!text && { minWidth: 95 } ]}
     >
       {icon && (
         <MaterialIcons name={icon} size={24} color={iconColor[variant]} />
@@ -49,6 +49,7 @@ export function Button({ icon, text, variant, ...props }: ButtonProps) {
 
 const styles = StyleSheet.create({
   container: {
+    height: 48,
     borderRadius: 50,
     padding: 12,
     flexDirection: "row",
