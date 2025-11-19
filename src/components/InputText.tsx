@@ -10,10 +10,11 @@ export function InputText({
   icon,
   placeholder,
   placeholderTextColor,
+  style,
   ...props
 }: InputTextProps) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       {icon && <MaterialIcons name={icon} size={20} color={colors.gray[500]} />}
       <TextInput
         placeholder={placeholder}
@@ -27,7 +28,7 @@ export function InputText({
 
 const styles = StyleSheet.create({
   container: {
-    maxHeight: 50,
+    height: 50,
     paddingHorizontal: 15,
     backgroundColor: colors.gray[100],
     borderWidth: 1,

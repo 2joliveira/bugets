@@ -4,6 +4,7 @@ import { colors } from "@/theme";
 import { Button, InputCheckBox, InputText } from "@/components";
 import { STATUS_OPTIONS } from "../Home";
 import { InfosCard, Investments, ServiceInfos } from "./components";
+import { ServiceModal } from "./components/ServiceModal";
 
 const serviceMock = [
   {
@@ -21,57 +22,72 @@ const serviceMock = [
 ];
 
 export function Budget() {
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
   const [selectedStatus, setSelectedStatus] = useState<
     (typeof STATUS_OPTIONS)[number] | null
   >(null);
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <InfosCard title="Informações gerais" icon="storefront">
-          <View style={styles.content}>
-            <InputText icon="search" placeholder="Título" />
-            <InputText icon="search" placeholder="Cliente" />
-          </View>
-        </InfosCard>
+    <View style={{ flex: 1 }}>
+      <ScrollView>
+        <View style={styles.container}>
+          <InfosCard title="Informações gerais" icon="storefront">
+            <View style={styles.content}>
+              <InputText placeholder="Título" />
+              <InputText placeholder="Cliente" />
+            </View>
+          </InfosCard>
 
-        <InfosCard title="Status" icon="local-offer">
-          <View style={styles.content}>
-            <InputCheckBox
-              options={STATUS_OPTIONS}
-              selectedOption={selectedStatus}
-              setOption={setSelectedStatus}
-            />
-          </View>
-        </InfosCard>
+          <InfosCard title="Status" icon="local-offer">
+            <View style={styles.content}>
+              <InputCheckBox
+                options={STATUS_OPTIONS}
+                selectedOption={selectedStatus}
+                setOption={setSelectedStatus}
+              />
+            </View>
+          </InfosCard>
 
-        <InfosCard title="Serviços inclusos" icon="text-snippet">
-          <View style={styles.content}>
-            {serviceMock.map((service) => (
-              <ServiceInfos key={`service-${service.title}`} {...service} />
-            ))}
-          </View>
+          <InfosCard title="Serviços inclusos" icon="text-snippet">
+            <View style={styles.content}>
+              {serviceMock.map((service) => (
+                <ServiceInfos key={`service-${service.title}`} {...service} />
+              ))}
+            </View>
 
-          <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
-            <Button variant="secondary" text="Adicionar serviço" icon="add" />
-          </View>
-        </InfosCard>
+            <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
+              <Button
+                variant="secondary"
+                text="Adicionar serviço"
+                icon="add"
+                onPress={() => setIsOpenModal(true)}
+              />
+            </View>
+          </InfosCard>
 
-        <InfosCard title="Investimentos" icon="credit-card">
-          <Investments />
-        </InfosCard>
-      </View>
-
+          <InfosCard title="Investimentos" icon="credit-card">
+            <Investments />
+          </InfosCard>
+        </View>
+      </ScrollView>
       <View style={styles.footer}>
         <Button variant="secondary" text="Cancelar" />
         <Button variant="primary" text="Salvar" icon="check" />
       </View>
-    </ScrollView>
+      {isOpenModal && (
+        <ServiceModal
+          visible={isOpenModal}
+          onClose={() => setIsOpenModal(false)}
+        />
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    height: "100%",
     flex: 1,
     padding: 20,
     borderTopWidth: 1,
@@ -85,6 +101,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     height: 100,
+    paddingBottom: 20,
     backgroundColor: colors.white,
     borderTopWidth: 1,
     borderColor: colors.gray[200],
