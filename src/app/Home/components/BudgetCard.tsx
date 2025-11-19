@@ -3,8 +3,6 @@ import { colors, fontFamily } from "@/theme";
 import { StyleSheet, Text, View } from "react-native";
 import { STATUS_OPTIONS } from "..";
 
-
-
 type StatusType = (typeof STATUS_OPTIONS)[number];
 
 interface BudgetCardProps {

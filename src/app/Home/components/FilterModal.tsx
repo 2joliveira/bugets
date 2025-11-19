@@ -1,17 +1,7 @@
 import { Button, InputCheckBox, InputRadio } from "@/components";
 import { colors, fontFamily } from "@/theme";
-import { MaterialIcons } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Modal,
-  View,
-  TouchableWithoutFeedback,
-  Animated,
-  Dimensions,
-  StyleSheet,
-  Text,
-  Pressable,
-} from "react-native";
+import React, { useState } from "react";
+import { View, Dimensions, StyleSheet, Text } from "react-native";
 import { STATUS_OPTIONS } from "..";
 import { ModalComponent } from "@/components/Modal";
 
@@ -47,6 +37,7 @@ export function FilterModal({ visible, onClose }: FilterModalProps) {
       visible={visible}
       onClose={onClose}
       title="Filtrar e ordenar"
+      proportionalHeight={0.65}
     >
       <View style={styles.content}>
         <Text style={styles.section}>Status</Text>
@@ -85,6 +76,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   footer: {
+    marginTop: 50,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

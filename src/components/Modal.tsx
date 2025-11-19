@@ -11,12 +11,14 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface ModalProps {
   visible: boolean;
   onClose: () => void;
   children: React.ReactNode;
   title: string;
+  proportionalHeight: number;
 }
 
 const { height } = Dimensions.get("window");
@@ -26,8 +28,10 @@ export function ModalComponent({
   onClose,
   title,
   children,
+  proportionalHeight,
 }: ModalProps) {
   const translateY = useRef(new Animated.Value(height)).current;
+  const insets = useSafeAreaInsets();
 
   function open() {
     Animated.timing(translateY, {
@@ -51,13 +55,17 @@ export function ModalComponent({
   }, [visible]);
 
   return (
-    <Modal visible={visible} transparent>
+    <Modal visible={visible} transparent animationType="fade">
       <TouchableWithoutFeedback onPress={close}>
         <View style={styles.backdrop} />
       </TouchableWithoutFeedback>
 
       <Animated.View
-        style={[styles.container, { transform: [{ translateY }] }]}
+        style={[
+          styles.container,
+          { transform: [{ translateY }] },
+          { height: height * proportionalHeight, zIndex: 9999 },
+        ]}
       >
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
@@ -76,18 +84,15 @@ export function ModalComponent({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    height: "100%",
     backgroundColor: "rgba(0,0,0,0.3)",
   },
   container: {
     position: "absolute",
     bottom: 0,
     width: "100%",
-    height: height * 0.65,
     backgroundColor: colors.white,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
-    overflow: "hidden",
   },
   header: {
     padding: 20,
