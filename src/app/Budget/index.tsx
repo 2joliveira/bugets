@@ -30,8 +30,8 @@ export function Budget() {
       <View style={styles.container}>
         <InfosCard title="Informações gerais" icon="storefront">
           <View style={styles.content}>
-            <InputText icon="search" placeholder="Título" />
-            <InputText icon="search" placeholder="Cliente" />
+            <InputText placeholder="Título" />
+            <InputText placeholder="Cliente" />
           </View>
         </InfosCard>
 
