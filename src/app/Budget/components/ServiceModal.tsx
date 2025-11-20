@@ -61,9 +61,9 @@ export function ServiceModal({ visible, onClose }: FilterModalProps) {
         </View>
 
         <View style={styles.footer}>
-          <Button variant="secondary" text="Resetar filtros" />
+          <Button variant="destructive" icon="delete-outline" />
 
-          <Button variant="primary" icon="check" text="Aplicar" />
+          <Button variant="primary" icon="check" text="Salvar" />
         </View>
       </View>
     </ModalComponent>

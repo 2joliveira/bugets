@@ -17,7 +17,7 @@ export function Button({ icon, text, variant, ...props }: ButtonProps) {
   const variants = {
     primary: { ...styles.primary },
     secondary: { ...styles.secondary },
-    destructive: {},
+    destructive: { ...styles.destructive },
   };
 
   const variantsText = {
@@ -35,7 +35,7 @@ export function Button({ icon, text, variant, ...props }: ButtonProps) {
   return (
     <TouchableOpacity
       {...props}
-      style={[ styles.container, variants[variant], !!text && { minWidth: 95 } ]}
+      style={[styles.container, variants[variant], !!text && { minWidth: 95 }]}
     >
       {icon && (
         <MaterialIcons name={icon} size={24} color={iconColor[variant]} />
@@ -65,6 +65,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.purple.base,
   },
   secondary: {
+    backgroundColor: colors.gray[100],
+    borderWidth: 1,
+    borderColor: colors.gray[300],
+  },
+  destructive: {
     backgroundColor: colors.gray[100],
     borderWidth: 1,
     borderColor: colors.gray[300],
