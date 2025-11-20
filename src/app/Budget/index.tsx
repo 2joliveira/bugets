@@ -70,11 +70,23 @@ export function Budget() {
             <Investments />
           </InfosCard>
         </View>
+
+        <View style={styles.footer}>
+          <Button variant="secondary" text="Cancelar" />
+          <Button variant="primary" text="Salvar" icon="check" />
+        </View>
       </ScrollView>
-      <View style={styles.footer}>
-        <Button variant="secondary" text="Cancelar" />
-        <Button variant="primary" text="Salvar" icon="check" />
-      </View>
+
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          height: 25,
+          width: "100%",
+          backgroundColor: colors.white,
+        }}
+      />
+
       {isOpenModal && (
         <ServiceModal
           visible={isOpenModal}
