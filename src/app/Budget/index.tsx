@@ -3,8 +3,7 @@ import { StyleSheet, View, ScrollView } from "react-native";
 import { colors } from "@/theme";
 import { Button, InputCheckBox, InputText } from "@/components";
 import { STATUS_OPTIONS } from "../Home";
-import { InfosCard, Investments, ServiceInfos } from "./components";
-import { ServiceModal } from "./components/ServiceModal";
+import { InfosCard, Investments, ServiceInfos, ServiceModal } from "./components";
 
 const serviceMock = [
   {
