@@ -38,7 +38,7 @@ export function Button({ icon, text, variant, ...props }: ButtonProps) {
       style={[styles.container, variants[variant], !!text && { minWidth: 95 }]}
     >
       {icon && (
-        <MaterialIcons name={icon} size={24} color={iconColor[variant]} />
+        <MaterialIcons name={icon} size={20} color={iconColor[variant]} />
       )}
       {text && (
         <Text style={{ ...styles.text, ...variantsText[variant] }}>{text}</Text>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 5,
+    gap: 10,
   },
   text: {
     ...fontFamily.titleSm,
