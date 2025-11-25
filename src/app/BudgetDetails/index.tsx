@@ -1,23 +1,21 @@
-import { StackRoutesProps } from "@/routes/StackRoutes";
+import { StyleSheet, View } from "react-native";
 import { colors } from "@/theme";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Details } from "./components";
 
-export function BudgetDetails({
-  navigation,
-  route,
-}: StackRoutesProps<"budgetDetails">) {
+export function BudgetDetails() {
   return (
     <View style={styles.container}>
-      <Text>Budget Details Screen {route.params.id}</Text>
-
-      <Button title="Home" onPress={() => navigation.goBack()} />
+      <Details />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     borderTopWidth: 1,
     borderTopColor: colors.gray[300],
+    backgroundColor: colors.white,
+    padding: 20,
   },
 });

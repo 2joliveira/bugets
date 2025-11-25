@@ -1,14 +1,22 @@
-import { StyleSheet, View } from "react-native";
-import { Button, InputText, MainHeader } from "@/components";
+import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Button, InputText } from "@/components";
 import { colors } from "@/theme";
-import { BudgetCard } from "./components";
-import { FilterModal } from "./components/FilterModal";
+import { BudgetCard, FilterModal, MainHeader } from "./components";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackRoutesList } from "@/routes/StackRoutes";
 
 export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
 
 export function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<StackRoutesList, "home">>();
+
+  function handleNavigate() {
+    navigation.navigate("budgetDetails", { id: "123" });
+  }
 
   return (
     <View style={styles.container}>
@@ -24,7 +32,9 @@ export function Home() {
       </View>
 
       <View style={styles.budgetslist}>
-        <BudgetCard status="success" />
+        <TouchableOpacity onPress={handleNavigate}>
+          <BudgetCard status="success" />
+        </TouchableOpacity>
         <BudgetCard status="recused" />
         <BudgetCard status="sent" />
         <BudgetCard status="draft" />
