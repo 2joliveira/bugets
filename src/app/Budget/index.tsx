@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
-import { colors } from "@/theme";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { Button, InputCheckBox, InputText } from "@/components";
+import { colors } from "@/theme";
 import { STATUS_OPTIONS } from "../Home";
-import { InfosCard, Investments, ServiceInfos, ServiceModal } from "./components";
+import {
+  InfosCard,
+  Investments,
+  ServiceInfos,
+  ServiceModal,
+} from "./components";
 
 const serviceMock = [
   {
@@ -27,23 +33,63 @@ export function Budget() {
     (typeof STATUS_OPTIONS)[number] | null
   >(null);
 
+  const { control, handleSubmit } = useForm();
+
+  const { fields, append } = useFieldArray({
+    control,
+    name: "services",
+  });
+
+  console.log("fields", fields)
+
+  function onSubmit(data: any) {
+    console.log("FORM DATA:", data);
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView>
         <View style={styles.container}>
           <InfosCard title="Informações gerais" icon="storefront">
             <View style={styles.content}>
-              <InputText placeholder="Título" />
-              <InputText placeholder="Cliente" />
+              <Controller
+                control={control}
+                name="title"
+                render={({ field: { value, onChange } }) => (
+                  <InputText
+                    placeholder="Título"
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="client"
+                render={({ field: { value, onChange } }) => (
+                  <InputText
+                    placeholder="Cliente"
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
             </View>
           </InfosCard>
 
           <InfosCard title="Status" icon="local-offer">
             <View style={styles.content}>
-              <InputCheckBox
-                options={STATUS_OPTIONS}
-                selectedOption={selectedStatus}
-                setOption={setSelectedStatus}
+              <Controller
+                control={control}
+                name="status"
+                render={({ field: { value, onChange } }) => (
+                  <InputCheckBox
+                    options={STATUS_OPTIONS}
+                    selectedOption={value}
+                    setOption={onChange}
+                  />
+                )}
               />
             </View>
           </InfosCard>
@@ -66,13 +112,18 @@ export function Budget() {
           </InfosCard>
 
           <InfosCard title="Investimentos" icon="credit-card">
-            <Investments />
+            <Investments control={control} />
           </InfosCard>
         </View>
 
         <View style={styles.footer}>
           <Button variant="secondary" text="Cancelar" />
-          <Button variant="primary" text="Salvar" icon="check" />
+          <Button
+            variant="primary"
+            text="Salvar"
+            icon="check"
+            onPress={handleSubmit(onSubmit)}
+          />
         </View>
       </ScrollView>
 
@@ -90,6 +141,7 @@ export function Budget() {
         <ServiceModal
           visible={isOpenModal}
           onClose={() => setIsOpenModal(false)}
+          onAddService={append}
         />
       )}
     </View>

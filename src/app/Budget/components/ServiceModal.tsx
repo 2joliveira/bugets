@@ -1,15 +1,42 @@
-import { Button, InputText } from "@/components";
-import { ModalComponent } from "@/components/Modal";
-import { colors, fontFamily } from "@/theme";
-import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Controller,
+  FieldValues,
+  UseFieldArrayAppend,
+  useForm,
+} from "react-hook-form";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Button, InputText, ModalComponent } from "@/components";
+import { colors, fontFamily } from "@/theme";
 
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
+  onAddService: UseFieldArrayAppend<FieldValues, "services">;
 }
 
-export function ServiceModal({ visible, onClose }: FilterModalProps) {
+export function ServiceModal({
+  visible,
+  onClose,
+  onAddService,
+}: FilterModalProps) {
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+      price: "",
+      quantity: 0,
+    },
+  });
+
+  function handleAddService(data: any) {
+    console.log(data);
+    onAddService(data);
+
+    reset();
+    onClose();
+  }
+
   return (
     <ModalComponent
       visible={visible}
@@ -19,51 +46,92 @@ export function ServiceModal({ visible, onClose }: FilterModalProps) {
     >
       <View style={{ flex: 1 }}>
         <View style={styles.modalContent}>
-          <InputText placeholder="Título" />
+          <Controller
+            control={control}
+            name="title"
+            render={({ field: { value, onChange } }) => (
+              <InputText
+                placeholder="Título"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
+          />
 
-          <InputText
-            placeholder="Descrição"
-            multiline
-            numberOfLines={10}
-            style={{
-              minHeight: 120,
-              borderRadius: 20,
-              alignItems: "flex-start",
-            }}
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { value, onChange } }) => (
+              <InputText
+                placeholder="Descrição"
+                multiline
+                numberOfLines={10}
+                style={{
+                  minHeight: 120,
+                  borderRadius: 20,
+                  alignItems: "flex-start",
+                }}
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
           />
 
           <View style={styles.priceQuantityContainer}>
-            <InputText
-              placeholder="Preço"
-              keyboardType="decimal-pad"
-              inputMode="decimal"
-              style={{ width: 250 }}
+            <Controller
+              control={control}
+              name="price"
+              render={({ field: { value, onChange } }) => (
+                <InputText
+                  placeholder="Preço"
+                  keyboardType="decimal-pad"
+                  inputMode="decimal"
+                  style={{ width: 250 }}
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
             />
 
-            <View style={styles.counter}>
-              <TouchableOpacity>
-                <MaterialIcons
-                  name="remove"
-                  size={20}
-                  color={colors.purple.base}
-                />
-              </TouchableOpacity>
-              <Text>5</Text>
-              <TouchableOpacity>
-                <MaterialIcons
-                  name="add"
-                  size={20}
-                  color={colors.purple.base}
-                />
-              </TouchableOpacity>
-            </View>
+            <Controller
+              control={control}
+              name="quantity"
+              render={({ field: { value, onChange } }) => (
+                <View style={styles.counter}>
+                  <TouchableOpacity
+                    onPress={() => onChange(Math.max(1, value - 1))}
+                  >
+                    <MaterialIcons
+                      name="remove"
+                      size={20}
+                      color={colors.purple.base}
+                    />
+                  </TouchableOpacity>
+
+                  <Text>{value}</Text>
+
+                  <TouchableOpacity onPress={() => onChange(value + 1)}>
+                    <MaterialIcons
+                      name="add"
+                      size={20}
+                      color={colors.purple.base}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
           </View>
         </View>
 
         <View style={styles.footer}>
           <Button variant="destructive" icon="delete-outline" />
 
-          <Button variant="primary" icon="check" text="Salvar" />
+          <Button
+            variant="primary"
+            icon="check"
+            text="Salvar"
+            onPress={handleSubmit(handleAddService)}
+          />
         </View>
       </View>
     </ModalComponent>
@@ -94,7 +162,7 @@ const styles = StyleSheet.create({
     ...fontFamily.textMd,
     color: colors.gray[700],
   },
- footer: {
+  footer: {
     marginTop: 80,
     flexDirection: "row",
     justifyContent: "center",
