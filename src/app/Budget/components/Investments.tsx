@@ -1,7 +1,12 @@
 import { colors, fontFamily } from "@/theme";
-import { StyleSheet, Text, View } from "react-native";
+import { Controller, ControllerProps } from "react-hook-form";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
-export function Investments() {
+interface InvestimentsProps {
+  control: ControllerProps["control"];
+}
+
+export function Investments({ control }: InvestimentsProps) {
   return (
     <View style={{ gap: 12, marginTop: 20 }}>
       <View style={[styles.infosContainer, { paddingHorizontal: 20 }]}>
@@ -24,9 +29,21 @@ export function Investments() {
           ]}
         >
           <Text style={styles.text}>Desconto</Text>
-          <View style={styles.percentageContainer}>
-            <Text style={styles.percentage}>8 %</Text>
-          </View>
+
+          <Controller
+            control={control}
+            name="percentageDiscount"
+            render={({ field: { value, onChange } }) => (
+              <TextInput
+                style={styles.percentageInput}
+                keyboardType="numeric"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
+          />
+
+          <Text style={styles.percentage}>%</Text>
         </View>
 
         <View style={styles.priceContainer}>
@@ -88,22 +105,24 @@ const styles = StyleSheet.create({
     ...fontFamily.textSm,
     color: colors.gray[700],
   },
-  percentageContainer: {
-    height: 32,
+  percentageInput: {
+    height: 40,
     width: 75,
+    paddingHorizontal: 15,
     flexDirection: "row",
-    gap: 8,
     backgroundColor: colors.gray[100],
     borderWidth: 1,
     borderRadius: 50,
     borderColor: colors.gray[300],
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
   },
   percentage: {
     ...fontFamily.textMd,
     color: colors.gray[700],
-    letterSpacing: 5,
+    position: "absolute",
+    right: 15,
   },
   totalContainer: {
     height: 75,
