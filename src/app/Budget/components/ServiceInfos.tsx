@@ -6,7 +6,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 interface ServiceInfosProps {
   title: string;
   description: string;
-  price: string;
+  price: number;
   quantity: number;
 }
 
