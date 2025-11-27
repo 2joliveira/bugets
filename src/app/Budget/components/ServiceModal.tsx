@@ -1,18 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import {
-  Controller,
-  FieldValues,
-  UseFieldArrayAppend,
-  useForm,
-} from "react-hook-form";
+import { Controller, UseFieldArrayAppend, useForm } from "react-hook-form";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Button, InputText, ModalComponent } from "@/components";
+import { Button, Error, InputText, ModalComponent } from "@/components";
 import { colors, fontFamily } from "@/theme";
+import { BudgetType, serviceSchema, ServiceType } from "..";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
-  onAddService: UseFieldArrayAppend<FieldValues, "services">;
+  onAddService: UseFieldArrayAppend<BudgetType, "services">;
 }
 
 export function ServiceModal({
@@ -20,7 +17,13 @@ export function ServiceModal({
   onClose,
   onAddService,
 }: FilterModalProps) {
-  const { control, handleSubmit, reset } = useForm({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ServiceType>({
+    resolver: zodResolver(serviceSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -54,6 +57,7 @@ export function ServiceModal({
                 placeholder="Título"
                 value={value}
                 onChangeText={onChange}
+                error={errors.title?.message}
               />
             )}
           />
@@ -73,6 +77,7 @@ export function ServiceModal({
                 }}
                 value={value}
                 onChangeText={onChange}
+                error={errors.description?.message}
               />
             )}
           />
@@ -89,6 +94,7 @@ export function ServiceModal({
                   style={{ width: 250 }}
                   value={value}
                   onChangeText={onChange}
+                  error={errors.price?.message}
                 />
               )}
             />
@@ -97,7 +103,14 @@ export function ServiceModal({
               control={control}
               name="quantity"
               render={({ field: { value, onChange } }) => (
-                <View style={styles.counter}>
+                <View
+                  style={[
+                    styles.counter,
+                    errors.quantity?.message && {
+                      borderColor: colors.danger.base,
+                    },
+                  ]}
+                >
                   <TouchableOpacity
                     onPress={() => onChange(Math.max(1, value - 1))}
                   >
@@ -117,6 +130,10 @@ export function ServiceModal({
                       color={colors.purple.base}
                     />
                   </TouchableOpacity>
+
+                  {errors.quantity?.message && (
+                    <Error error={errors.quantity?.message} />
+                  )}
                 </View>
               )}
             />
@@ -141,7 +158,7 @@ export function ServiceModal({
 const styles = StyleSheet.create({
   modalContent: {
     padding: 20,
-    gap: 12,
+    gap: 20,
   },
   priceQuantityContainer: {
     flexDirection: "row",
