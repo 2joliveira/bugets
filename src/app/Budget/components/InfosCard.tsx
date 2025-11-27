@@ -1,22 +1,30 @@
-import { colors, fontFamily } from "@/theme";
-import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { colors, fontFamily } from "@/theme";
+import { Error } from "@/components";
 
 interface InfosCardProps {
   title: string;
   icon: keyof typeof MaterialIcons.glyphMap;
   children: React.ReactNode;
+  error?: string;
 }
 
-export function InfosCard({ title, icon, children }: InfosCardProps) {
+export function InfosCard({ title, icon, children, error }: InfosCardProps) {
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, error && { borderColor: colors.danger.base }]}
+    >
       <View style={styles.header}>
         <MaterialIcons name={icon} color={colors.purple.base} size={20} />
         <Text style={styles.title}>{title}</Text>
       </View>
 
       <View>{children}</View>
+
+      {error && (
+        <Error error={error} />
+      )}
     </View>
   );
 }

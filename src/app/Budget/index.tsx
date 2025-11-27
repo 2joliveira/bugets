@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, InputCheckBox, InputText } from "@/components";
 import { colors } from "@/theme";
 import { STATUS_OPTIONS } from "../Home";
@@ -11,36 +13,40 @@ import {
   ServiceModal,
 } from "./components";
 
-const serviceMock = [
-  {
-    title: "Design de interfaces",
-    subtitle: "Criação de wireframes e protótipos de alta fidelidade",
-    price: 3847.5,
-    quantity: 1,
-  },
-  {
-    title: "Implantação e suporte",
-    subtitle: "Publicação nas lojas de aplicativos e suporte técnico",
-    price: 2200,
-    quantity: 1,
-  },
-];
+export const serviceSchema = z.object({
+  title: z.string().min(2, "Título do serviço é obrigatório."),
+  description: z.string().min(2, "Adicione uma descrição."),
+  quantity: z.number().min(1, "informe a quantidade."),
+  price: z.string().min(1, "Informe o valor do serviço"),
+});
+
+const budgetSchema = z.object({
+  client: z.string({ error: "Nome do cliente é obrigatório." }),
+  title: z.string({ error: "Título do orçamento é obrigatório." }),
+  services: z.array(serviceSchema).min(1, "Adicione ao menos um serviço"),
+  status: z.enum(STATUS_OPTIONS, { error: "Status é obrigatório." }),
+  percentageDiscount: z.string(),
+});
+
+export type ServiceType = z.infer<typeof serviceSchema>;
+
+export type BudgetType = z.infer<typeof budgetSchema>;
 
 export function Budget() {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const [selectedStatus, setSelectedStatus] = useState<
-    (typeof STATUS_OPTIONS)[number] | null
-  >(null);
-
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<BudgetType>({
+    resolver: zodResolver(budgetSchema),
+  });
 
   const { fields, append } = useFieldArray({
     control,
     name: "services",
   });
-
-  console.log("fields", fields)
 
   function onSubmit(data: any) {
     console.log("FORM DATA:", data);
@@ -60,6 +66,7 @@ export function Budget() {
                     placeholder="Título"
                     value={value}
                     onChangeText={onChange}
+                    error={errors.title?.message}
                   />
                 )}
               />
@@ -72,13 +79,18 @@ export function Budget() {
                     placeholder="Cliente"
                     value={value}
                     onChangeText={onChange}
+                    error={errors.client?.message}
                   />
                 )}
               />
             </View>
           </InfosCard>
 
-          <InfosCard title="Status" icon="local-offer">
+          <InfosCard
+            title="Status"
+            icon="local-offer"
+            error={errors.status?.message}
+          >
             <View style={styles.content}>
               <Controller
                 control={control}
@@ -94,9 +106,9 @@ export function Budget() {
             </View>
           </InfosCard>
 
-          <InfosCard title="Serviços inclusos" icon="text-snippet">
+          <InfosCard title="Serviços inclusos" icon="text-snippet" error={errors.services?.message}>
             <View style={styles.content}>
-              {serviceMock.map((service) => (
+              {fields.map((service) => (
                 <ServiceInfos key={`service-${service.title}`} {...service} />
               ))}
             </View>
@@ -156,11 +168,11 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.gray[300],
     backgroundColor: colors.white,
-    gap: 20,
+    gap: 22,
   },
   content: {
     padding: 20,
-    gap: 12,
+    gap: 20,
   },
   footer: {
     height: 100,

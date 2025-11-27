@@ -5,14 +5,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface ServiceInfosProps {
   title: string;
-  subtitle: string;
-  price: number;
+  description: string;
+  price: string;
   quantity: number;
 }
 
 export function ServiceInfos({
   title,
-  subtitle,
+  description,
   price,
   quantity,
 }: ServiceInfosProps) {
@@ -20,15 +20,15 @@ export function ServiceInfos({
     <View style={styles.container}>
       <View style={styles.descriptions}>
         <Text style={styles.title}>{title}</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.subtitle}>
-          {subtitle}
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.description}>
+          {description}
         </Text>
       </View>
 
       <View style={{ justifyContent: "center", gap: 5 }}>
         <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 5 }}>
           <Text style={styles.currencySymbol}>R$</Text>
-          <Text style={styles.price}>{formatPrice(price)}</Text>
+          <Text style={styles.price}>{formatPrice(Number(price))}</Text>
         </View>
 
         <Text style={styles.quantity}>{`Qt: ${quantity}`}</Text>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     ...fontFamily.titleSm,
     color: colors.gray[700],
   },
-  subtitle: {
+  description: {
     ...fontFamily.textXs,
     color: colors.gray[500],
     width: 175,

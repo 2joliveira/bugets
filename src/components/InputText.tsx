@@ -1,9 +1,17 @@
-import { colors } from "@/theme";
+import { colors, fontFamily } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
+import { Error } from "./Error";
 
 type InputTextProps = TextInputProps & {
   icon?: keyof typeof MaterialIcons.glyphMap;
+  error?: string;
 };
 
 export function InputText({
@@ -11,18 +19,33 @@ export function InputText({
   placeholder,
   placeholderTextColor,
   style,
+  error,
   ...props
 }: InputTextProps) {
   return (
-    <View style={[styles.container, style]}>
-      {icon && <MaterialIcons name={icon} size={20} color={colors.gray[500]} />}
-      <TextInput
-        placeholder={placeholder}
-        placeholderTextColor={colors.gray[500]}
-        style={{ width: icon ? "76%" : "100%" }}
-        {...props}
-      />
-    </View>
+    <>
+      <View
+        style={[
+          styles.container,
+          style,
+          error && { borderColor: colors.danger.base },
+        ]}
+      >
+        {icon && (
+          <MaterialIcons name={icon} size={20} color={colors.gray[500]} />
+        )}
+        <TextInput
+          placeholder={placeholder}
+          placeholderTextColor={colors.gray[500]}
+          style={{ width: icon ? "76%" : "100%" }}
+          {...props}
+        />
+
+        {error && (
+         <Error error={error} />
+        )}
+      </View>
+    </>
   );
 }
 
@@ -39,4 +62,5 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     gap: 8,
   },
+  
 });

@@ -1,9 +1,10 @@
 import { colors, fontFamily } from "@/theme";
 import { Controller, ControllerProps } from "react-hook-form";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { BudgetType } from "..";
 
 interface InvestimentsProps {
-  control: ControllerProps["control"];
+  control: ControllerProps<BudgetType>["control"];
 }
 
 export function Investments({ control }: InvestimentsProps) {

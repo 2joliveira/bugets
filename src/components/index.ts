@@ -4,3 +4,4 @@ export * from "./InputCheckBox";
 export * from "./InputRadio";
 export * from "./Modal";
 export * from "./StatusTag";
+export * from "./Error";
