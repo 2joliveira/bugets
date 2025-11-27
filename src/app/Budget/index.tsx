@@ -17,15 +17,15 @@ export const serviceSchema = z.object({
   title: z.string().min(2, "Título do serviço é obrigatório."),
   description: z.string().min(2, "Adicione uma descrição."),
   quantity: z.number().min(1, "informe a quantidade."),
-  price: z.string().min(1, "Informe o valor do serviço"),
+  price: z.number().min(1, "Informe o valor do serviço"),
 });
 
 const budgetSchema = z.object({
-  client: z.string({ error: "Nome do cliente é obrigatório." }),
-  title: z.string({ error: "Título do orçamento é obrigatório." }),
+  client: z.string().min(1, "Nome do cliente é obrigatório."),
+  title: z.string().min(1, "Título do orçamento é obrigatório."),
   services: z.array(serviceSchema).min(1, "Adicione ao menos um serviço"),
   status: z.enum(STATUS_OPTIONS, { error: "Status é obrigatório." }),
-  percentageDiscount: z.string(),
+  percentageDiscount: z.number().optional(),
 });
 
 export type ServiceType = z.infer<typeof serviceSchema>;
@@ -41,6 +41,13 @@ export function Budget() {
     formState: { errors },
   } = useForm<BudgetType>({
     resolver: zodResolver(budgetSchema),
+    defaultValues: {
+      client: "",
+      title: "",
+      services: [],
+      status: undefined,
+      percentageDiscount: 0,
+    },
   });
 
   const { fields, append } = useFieldArray({
@@ -48,7 +55,7 @@ export function Budget() {
     name: "services",
   });
 
-  function onSubmit(data: any) {
+  function onSubmit(data: BudgetType) {
     console.log("FORM DATA:", data);
   }
 
@@ -106,7 +113,11 @@ export function Budget() {
             </View>
           </InfosCard>
 
-          <InfosCard title="Serviços inclusos" icon="text-snippet" error={errors.services?.message}>
+          <InfosCard
+            title="Serviços inclusos"
+            icon="text-snippet"
+            error={errors.services?.message}
+          >
             <View style={styles.content}>
               {fields.map((service) => (
                 <ServiceInfos key={`service-${service.title}`} {...service} />

@@ -1,10 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Controller, UseFieldArrayAppend, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Button, Error, InputText, ModalComponent } from "@/components";
 import { colors, fontFamily } from "@/theme";
 import { BudgetType, serviceSchema, ServiceType } from "..";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 interface FilterModalProps {
   visible: boolean;
@@ -27,15 +27,13 @@ export function ServiceModal({
     defaultValues: {
       title: "",
       description: "",
-      price: "",
+      price: 0,
       quantity: 0,
     },
   });
 
   function handleAddService(data: any) {
-    console.log(data);
     onAddService(data);
-
     reset();
     onClose();
   }
@@ -92,8 +90,8 @@ export function ServiceModal({
                   keyboardType="decimal-pad"
                   inputMode="decimal"
                   style={{ width: 250 }}
-                  value={value}
-                  onChangeText={onChange}
+                  value={String(value)}
+                  onChangeText={(text) => onChange(Number(text.replace(/\D/g, "")))}
                   error={errors.price?.message}
                 />
               )}

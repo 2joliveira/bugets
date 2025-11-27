@@ -38,8 +38,13 @@ export function Investments({ control }: InvestimentsProps) {
               <TextInput
                 style={styles.percentageInput}
                 keyboardType="numeric"
-                value={value}
-                onChangeText={onChange}
+                value={String(value)}
+                onChangeText={(text) => {
+                  const onlyNumbers = text.replace(/\D/g, "");
+                  const limited = Math.min(Number(onlyNumbers), 100);
+
+                  onChange(Number(limited));
+                }}
               />
             )}
           />
