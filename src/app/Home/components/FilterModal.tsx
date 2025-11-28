@@ -19,7 +19,7 @@ export const ORDER_OPTIONS = {
   lowest_value: "Menor valor",
 };
 
-type OrderOptionKeys = keyof typeof ORDER_OPTIONS;
+export type OrderOptionKeys = keyof typeof ORDER_OPTIONS;
 
 export type OrderOptionValue = (typeof ORDER_OPTIONS)[OrderOptionKeys];
 

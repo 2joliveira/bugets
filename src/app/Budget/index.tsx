@@ -12,6 +12,10 @@ import {
   ServiceInfos,
   ServiceModal,
 } from "./components";
+import { createBudget } from "@/storage/budgetsStorage";
+import { StackRoutesList } from "@/routes/StackRoutes";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
 
 export const serviceSchema = z.object({
   title: z.string().min(2, "Título do serviço é obrigatório."),
@@ -35,10 +39,14 @@ export type BudgetType = z.infer<typeof budgetSchema>;
 export function Budget() {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
+  const navigation =
+    useNavigation<NativeStackNavigationProp<StackRoutesList, "budget">>();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<BudgetType>({
     resolver: zodResolver(budgetSchema),
     defaultValues: {
@@ -56,7 +64,9 @@ export function Budget() {
   });
 
   function onSubmit(data: BudgetType) {
-    console.log("FORM DATA:", data);
+    createBudget(data);
+    reset();
+    navigation.navigate("home");
   }
 
   return (
