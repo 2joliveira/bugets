@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Controller, UseFieldArrayAppend, useForm } from "react-hook-form";
+import uuid from "react-native-uuid";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Button, Error, InputText, ModalComponent } from "@/components";
@@ -10,12 +11,14 @@ interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
   onAddService: UseFieldArrayAppend<BudgetType, "services">;
+  service?: ServiceType;
 }
 
 export function ServiceModal({
   visible,
   onClose,
   onAddService,
+  service,
 }: FilterModalProps) {
   const {
     control,
@@ -24,7 +27,8 @@ export function ServiceModal({
     formState: { errors },
   } = useForm<ServiceType>({
     resolver: zodResolver(serviceSchema),
-    defaultValues: {
+    defaultValues: service ?? {
+      id: uuid.v4(),
       title: "",
       description: "",
       price: 0,
@@ -32,8 +36,13 @@ export function ServiceModal({
     },
   });
 
-  function handleAddService(data: any) {
+  function handleAddService(data: ServiceType) {
     onAddService(data);
+    reset();
+    onClose();
+  }
+
+  function handleCancel() {
     reset();
     onClose();
   }
@@ -91,7 +100,9 @@ export function ServiceModal({
                   inputMode="decimal"
                   style={{ width: 250 }}
                   value={String(value)}
-                  onChangeText={(text) => onChange(Number(text.replace(/\D/g, "")))}
+                  onChangeText={(text) =>
+                    onChange(Number(text.replace(/\D/g, "")))
+                  }
                   error={errors.price?.message}
                 />
               )}
@@ -139,7 +150,15 @@ export function ServiceModal({
         </View>
 
         <View style={styles.footer}>
-          <Button variant="destructive" icon="delete-outline" />
+          {service ? (
+            <Button variant="destructive" icon="delete-outline" />
+          ) : (
+            <Button
+              variant="secondary"
+              text="Cancelar"
+              onPress={handleCancel}
+            />
+          )}
 
           <Button
             variant="primary"

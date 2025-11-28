@@ -12,12 +12,13 @@ import {
   ServiceInfos,
   ServiceModal,
 } from "./components";
-import { createBudget } from "@/storage/budgetsStorage";
 import { StackRoutesList } from "@/routes/StackRoutes";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
+import { useBudgets } from "@/context/BudgetContext";
 
 export const serviceSchema = z.object({
+  id: z.uuidv4(),
   title: z.string().min(2, "Título do serviço é obrigatório."),
   description: z.string().min(2, "Adicione uma descrição."),
   quantity: z.number().min(1, "informe a quantidade."),
@@ -38,6 +39,7 @@ export type BudgetType = z.infer<typeof budgetSchema>;
 
 export function Budget() {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const { addBudget, loadBudgets } = useBudgets();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "budget">>();
@@ -64,8 +66,9 @@ export function Budget() {
   });
 
   function onSubmit(data: BudgetType) {
-    createBudget(data);
+    addBudget(data);
     reset();
+    loadBudgets();
     navigation.navigate("home");
   }
 
@@ -130,7 +133,7 @@ export function Budget() {
           >
             <View style={styles.content}>
               {fields.map((service) => (
-                <ServiceInfos key={`service-${service.title}`} {...service} />
+                <ServiceInfos key={service.id} {...service} />
               ))}
             </View>
 
@@ -150,7 +153,11 @@ export function Budget() {
         </View>
 
         <View style={styles.footer}>
-          <Button variant="secondary" text="Cancelar" />
+          <Button
+            variant="secondary"
+            text="Cancelar"
+            onPress={() => navigation.navigate("home")}
+          />
           <Button
             variant="primary"
             text="Salvar"

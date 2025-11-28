@@ -2,11 +2,11 @@ import { useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Button, InputText } from "@/components";
 import { StackRoutesList } from "@/routes/StackRoutes";
-import { useBudgets } from "@/hooks/useBudgets";
 import { colors } from "@/theme";
+import { Button, InputText } from "@/components";
 import { BudgetCard, FilterModal, MainHeader } from "./components";
+import { useBudgets } from "@/context/BudgetContext";
 
 export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
 
@@ -16,11 +16,11 @@ export function Home() {
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "home">>();
 
-  function handleNavigate() {
-    navigation.navigate("budgetDetails", { id: "123" });
+  function handleNavigate(id: string) {
+    navigation.navigate("budgetDetails", { id });
   }
 
-  const { loading, budgets } = useBudgets();
+  const { budgets } = useBudgets();
 
   return (
     <View style={styles.container}>
@@ -39,8 +39,8 @@ export function Home() {
         <View style={styles.budgetslist}>
           {budgets &&
             budgets.length > 0 &&
-            budgets.map(() => (
-              <TouchableOpacity onPress={handleNavigate}>
+            budgets.map(({ id }) => (
+              <TouchableOpacity key={id} onPress={() => handleNavigate(id)}>
                 <BudgetCard status="success" />
               </TouchableOpacity>
             ))}

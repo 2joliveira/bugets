@@ -3,7 +3,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BUDGET_STORAGE_KEY = "@budgets";
 
-export async function getBudgets(): Promise<BudgetType[]> {
+export interface BudgetItem extends BudgetType {
+  id: string;
+}
+
+export async function getBudgets(): Promise<BudgetItem[]> {
   try {
     const storage = await AsyncStorage.getItem(BUDGET_STORAGE_KEY);
 
@@ -18,7 +22,7 @@ export async function getBudgets(): Promise<BudgetType[]> {
   }
 }
 
-export async function createBudget(budget: BudgetType): Promise<void> {
+export async function createBudget(budget: BudgetItem): Promise<void> {
   try {
     const existingBudgets = await getBudgets();
 
