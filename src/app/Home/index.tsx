@@ -1,22 +1,26 @@
-import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Button, InputText } from "@/components";
-import { colors } from "@/theme";
-import { BudgetCard, FilterModal, MainHeader } from "./components";
 import { useState } from "react";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Button, InputText } from "@/components";
 import { StackRoutesList } from "@/routes/StackRoutes";
+import { useBudgets } from "@/hooks/useBudgets";
+import { colors } from "@/theme";
+import { BudgetCard, FilterModal, MainHeader } from "./components";
 
 export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
 
 export function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "home">>();
 
   function handleNavigate() {
     navigation.navigate("budgetDetails", { id: "123" });
   }
+
+  const { loading, budgets } = useBudgets();
 
   return (
     <View style={styles.container}>
@@ -31,15 +35,17 @@ export function Home() {
         />
       </View>
 
-      <View style={styles.budgetslist}>
-        <TouchableOpacity onPress={handleNavigate}>
-          <BudgetCard status="success" />
-        </TouchableOpacity>
-        <BudgetCard status="recused" />
-        <BudgetCard status="sent" />
-        <BudgetCard status="draft" />
-        <BudgetCard status="success" />
-      </View>
+      <ScrollView>
+        <View style={styles.budgetslist}>
+          {budgets &&
+            budgets.length > 0 &&
+            budgets.map(() => (
+              <TouchableOpacity onPress={handleNavigate}>
+                <BudgetCard status="success" />
+              </TouchableOpacity>
+            ))}
+        </View>
+      </ScrollView>
 
       {isOpenModal && (
         <FilterModal
@@ -63,6 +69,7 @@ const styles = StyleSheet.create({
   },
   budgetslist: {
     paddingHorizontal: 16,
+    paddingBottom: 20,
     marginTop: 10,
     gap: 12,
   },
