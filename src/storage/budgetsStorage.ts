@@ -17,22 +17,36 @@ export async function getBudgets(): Promise<BudgetItem[]> {
 
     return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
-    console.error("Error reading budgets:", error);
+    console.error(error);
     return [];
   }
 }
 
 export async function createBudget(budget: BudgetItem): Promise<void> {
   try {
-    const existingBudgets = await getBudgets();
+    const currentBudgets = await getBudgets();
 
-    const updatedBudgets = [...existingBudgets, budget];
+    const updatedBudgets = [...currentBudgets, budget];
 
     await AsyncStorage.setItem(
       BUDGET_STORAGE_KEY,
       JSON.stringify(updatedBudgets)
     );
   } catch (error) {
-    console.error("Error creating budget:", error);
+    console.error(error);
+  }
+}
+
+export async function removeBudget(id: string): Promise<void> {
+  try {
+    const currentBudgets = await getBudgets();
+    const updatedBudgets = currentBudgets.filter((budget) => budget.id !== id);
+
+    await AsyncStorage.setItem(
+      BUDGET_STORAGE_KEY,
+      JSON.stringify(updatedBudgets)
+    );
+  } catch (error) {
+    console.error(error);
   }
 }

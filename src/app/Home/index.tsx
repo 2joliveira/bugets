@@ -39,9 +39,9 @@ export function Home() {
         <View style={styles.budgetslist}>
           {budgets &&
             budgets.length > 0 &&
-            budgets.map(({ id }) => (
+            budgets.map(({ id, ...budget }) => (
               <TouchableOpacity key={id} onPress={() => handleNavigate(id)}>
-                <BudgetCard status="success" />
+                <BudgetCard {...budget} />
               </TouchableOpacity>
             ))}
         </View>

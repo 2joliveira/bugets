@@ -7,13 +7,19 @@ import {
 } from "react";
 import uuid from "react-native-uuid";
 import { BudgetType } from "@/app";
-import { getBudgets, createBudget, BudgetItem } from "@/storage/budgetsStorage";
+import {
+  getBudgets,
+  createBudget,
+  BudgetItem,
+  removeBudget,
+} from "@/storage/budgetsStorage";
 
 interface BudgetContextData {
   budgets: BudgetItem[];
   loading: boolean;
   addBudget: (budget: BudgetType) => Promise<void>;
   loadBudgets: () => Promise<void>;
+  deleteBudget: (id: string) => Promise<void>;
 }
 
 export const BudgetContext = createContext<BudgetContextData>(
@@ -46,13 +52,19 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
+  const deleteBudget = useCallback(async (id: string) => {
+    await removeBudget(id);
+
+    setBudgets((prev) => prev.filter((budget) => budget.id !== id));
+  }, []);
+
   useEffect(() => {
     loadBudgets();
   }, []);
 
   return (
     <BudgetContext.Provider
-      value={{ budgets, loading, addBudget, loadBudgets }}
+      value={{ budgets, loading, addBudget, loadBudgets, deleteBudget }}
     >
       {children}
     </BudgetContext.Provider>
