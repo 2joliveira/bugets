@@ -1,7 +1,9 @@
 import { StyleSheet, View } from "react-native";
+import { useBudgets } from "@/context/BudgetContext";
+import { StackRoutesProps } from "@/routes/StackRoutes";
 import { colors } from "@/theme";
-import { Details, InfosCard, ServiceInfos, Total } from "./components";
 import { Button } from "@/components";
+import { Details, InfosCard, ServiceInfos, Total } from "./components";
 
 const serviceMock = [
   {
@@ -18,7 +20,18 @@ const serviceMock = [
   },
 ];
 
-export function BudgetDetails() {
+export function BudgetDetails({
+  navigation,
+  route,
+}: StackRoutesProps<"budgetDetails">) {
+  const { deleteBudget } = useBudgets();
+  const { id } = route.params;
+
+  function handleDeleteBudget() {
+    deleteBudget(id);
+    navigation.goBack();
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -37,7 +50,11 @@ export function BudgetDetails() {
 
       <View style={styles.footer}>
         <View style={styles.buttons}>
-          <Button variant="destructive" icon="delete-outline" />
+          <Button
+            variant="destructive"
+            icon="delete-outline"
+            onPress={handleDeleteBudget}
+          />
           <Button variant="secondary" icon="content-copy" />
           <Button variant="secondary" icon="edit" />
         </View>

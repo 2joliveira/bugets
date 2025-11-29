@@ -1,25 +1,19 @@
-import { StatusTag } from "@/components/StatusTag";
-import { colors, fontFamily } from "@/theme";
 import { StyleSheet, Text, View } from "react-native";
-import { STATUS_OPTIONS } from "..";
+import { colors, fontFamily } from "@/theme";
+import { StatusTag } from "@/components/StatusTag";
+import { BudgetType } from "@/app/Budget";
 
-type StatusType = (typeof STATUS_OPTIONS)[number];
-
-interface BudgetCardProps {
-  status: StatusType;
-}
-
-export function BudgetCard({ status }: BudgetCardProps) {
+export function BudgetCard({ client, title, status }: BudgetType) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        Desenvolvimento de aplicativo de loja online
+        {title}
       </Text>
       <View style={styles.status}>
         <StatusTag status={status} />
       </View>
       <View style={styles.infos}>
-        <Text style={styles.subtitle}>Soluções Tecnológicas Beta</Text>
+        <Text style={styles.subtitle}>{client}</Text>
 
         <View style={styles.priceContainer}>
           <Text style={styles.currencySymbol}>R$</Text>
