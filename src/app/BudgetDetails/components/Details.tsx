@@ -2,7 +2,14 @@ import { colors, fontFamily } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-export function Details() {
+interface DetailsProps {
+  title: string;
+  client: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export function Details({ client, title, createdAt, updatedAt }: DetailsProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -13,26 +20,28 @@ export function Details() {
             color={colors.purple.base}
           />
         </View>
-        <Text style={styles.title}>
-          Desenvolvimento de aplicativo de loja online
-        </Text>
+        <Text style={styles.title}>{title}</Text>
       </View>
 
       <View style={styles.content}>
         <View>
           <Text style={styles.infoTitle}>Cliente</Text>
-          <Text style={styles.infoContent}>Soluções Tecnológicas Beta</Text>
+          <Text style={styles.infoContent}>{client}</Text>
         </View>
 
         <View style={{ flexDirection: "row" }}>
           <View style={{ width: "50%" }}>
             <Text style={styles.infoTitle}>Criado em</Text>
-            <Text style={styles.infoContent}>22/08/2024</Text>
+            <Text style={styles.infoContent}>
+              {new Date(createdAt).toLocaleDateString("pt-BR")}
+            </Text>
           </View>
 
           <View style={{ width: "50%" }}>
             <Text style={styles.infoTitle}>Atualizado em</Text>
-            <Text style={styles.infoContent}>25/08/2024</Text>
+            <Text style={styles.infoContent}>
+              {new Date(updatedAt).toLocaleDateString("pt-BR")}
+            </Text>
           </View>
         </View>
       </View>

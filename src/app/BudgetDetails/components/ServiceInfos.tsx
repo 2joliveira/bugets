@@ -1,27 +1,19 @@
+import { ServiceType } from "@/app/Budget";
 import { colors, fontFamily } from "@/theme";
 import { formatPrice } from "@/utils/formatPrice";
 import { StyleSheet, Text, View } from "react-native";
 
-interface ServiceInfosProps {
-  title: string;
-  subtitle: string;
-  price: number;
-  quantity: number;
-}
-
 export function ServiceInfos({
   title,
-  subtitle,
+  description,
   price,
   quantity,
-}: ServiceInfosProps) {
+}: ServiceType) {
   return (
     <View style={styles.container}>
       <View style={styles.descriptions}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>
-          {subtitle}
-        </Text>
+        <Text style={styles.subtitle}>{description}</Text>
       </View>
 
       <View style={{ justifyContent: "center", gap: 5 }}>

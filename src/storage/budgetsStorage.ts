@@ -13,12 +13,26 @@ export async function getBudgets(): Promise<BudgetItem[]> {
 
     if (!storage) return [];
 
-    const parsed = JSON.parse(storage);
+    const parsedBudgets = JSON.parse(storage);
 
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsedBudgets) ? parsedBudgets : [];
   } catch (error) {
     console.error(error);
     return [];
+  }
+}
+
+export async function getBudget(id: string): Promise<BudgetItem | undefined> {
+  try {
+    const budgets = await getBudgets();
+
+    const budget = budgets.find((budget) => budget.id === id);
+
+    if (!budget) return undefined;
+
+    return budget;
+  } catch (error) {
+    console.error(error);
   }
 }
 

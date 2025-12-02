@@ -4,6 +4,8 @@ import { StackRoutesProps } from "@/routes/StackRoutes";
 import { colors } from "@/theme";
 import { Button } from "@/components";
 import { Details, InfosCard, ServiceInfos, Total } from "./components";
+import { useEffect, useState } from "react";
+import { BudgetItem } from "@/storage/budgetsStorage";
 
 const serviceMock = [
   {
@@ -24,7 +26,10 @@ export function BudgetDetails({
   navigation,
   route,
 }: StackRoutesProps<"budgetDetails">) {
-  const { deleteBudget } = useBudgets();
+  const [currentBudget, setCurrentBudget] = useState<BudgetItem | undefined>(
+    undefined
+  );
+  const { deleteBudget, getBudgetById } = useBudgets();
   const { id } = route.params;
 
   function handleDeleteBudget() {
@@ -32,20 +37,54 @@ export function BudgetDetails({
     navigation.goBack();
   }
 
+  async function loadBudget() {
+    const budget = await getBudgetById(id);
+
+    if (budget) {
+      setCurrentBudget(budget);
+    }
+  }
+
+  useEffect(() => {
+    loadBudget();
+  }, []);
+
+  if (!currentBudget) return;
+
+  const {
+    client,
+    title,
+    createdAt,
+    updatedAt,
+    services,
+    budgetPrice,
+    descountValue,
+    percentageDiscount,
+  } = currentBudget;
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Details />
+        <Details
+          client={client}
+          title={title}
+          createdAt={createdAt}
+          updatedAt={updatedAt}
+        />
 
         <InfosCard title="Serviços inclusos" icon="text-snippet">
           <View style={styles.serviceContent}>
-            {serviceMock.map((service) => (
-              <ServiceInfos key={`service-${service.title}`} {...service} />
+            {services.map((service) => (
+              <ServiceInfos key={service.id} {...service} />
             ))}
           </View>
         </InfosCard>
 
-        <Total />
+        <Total
+          budgetPrice={budgetPrice}
+          descountValue={descountValue}
+          percentageDiscount={percentageDiscount}
+        />
       </View>
 
       <View style={styles.footer}>

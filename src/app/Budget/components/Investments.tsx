@@ -31,7 +31,7 @@ export function Investments({
     setTotal(newTotal);
     setDescount(newDiscount);
 
-    onChangeValue("discountValue", newDiscount);
+    onChangeValue("descountValue", newDiscount);
     onChangeValue("budgetPrice", newTotal - newDiscount);
   }, [currentPercentage, services]);
 

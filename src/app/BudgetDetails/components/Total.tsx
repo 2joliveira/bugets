@@ -1,8 +1,19 @@
 import { colors, fontFamily } from "@/theme";
+import { formatPrice } from "@/utils/formatPrice";
 import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-export function Total() {
+interface TotalProps {
+  budgetPrice: number;
+  descountValue?: number;
+  percentageDiscount?: number;
+}
+
+export function Total({
+  budgetPrice,
+  descountValue,
+  percentageDiscount,
+}: TotalProps) {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
@@ -18,19 +29,23 @@ export function Total() {
               { color: colors.gray[600], textDecorationLine: "line-through" },
             ]}
           >
-            R$ 4.050,00
+            {`R$ ${formatPrice(budgetPrice)}`}
           </Text>
         </View>
 
-        <View style={styles.line}>
-          <View style={[styles.line, { gap: 8 }]}>
-            <Text style={styles.infoTitle}>Desconto</Text>
-            <Text style={styles.percentage}>5% off</Text>
+        {descountValue && percentageDiscount && (
+          <View style={styles.line}>
+            <View style={[styles.line, { gap: 8 }]}>
+              <Text style={styles.infoTitle}>Desconto</Text>
+              <Text
+                style={styles.percentage}
+              >{`${percentageDiscount}% off`}</Text>
+            </View>
+            <Text style={[styles.price, { color: colors.success.dark }]}>
+              {`- R$ ${formatPrice(descountValue)}`}
+            </Text>
           </View>
-          <Text style={[styles.price, { color: colors.success.dark }]}>
-            - R$ 200,00
-          </Text>
-        </View>
+        )}
 
         <View
           style={[
@@ -43,12 +58,7 @@ export function Total() {
           ]}
         >
           <Text style={styles.totalText}>Investimento total</Text>
-          <View
-            style={[
-              styles.line,
-              { alignItems: "baseline", gap: 5 },
-            ]}
-          >
+          <View style={[styles.line, { alignItems: "baseline", gap: 5 }]}>
             <Text style={styles.currencySymbol}>R$</Text>
             <Text style={styles.totalPrice}>3.847,50</Text>
           </View>
