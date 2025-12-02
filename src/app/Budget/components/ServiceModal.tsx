@@ -1,5 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Controller, UseFieldArrayAppend, useForm } from "react-hook-form";
+import {
+  Controller,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
+  UseFieldArrayUpdate,
+  useForm,
+} from "react-hook-form";
 import uuid from "react-native-uuid";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -10,15 +16,21 @@ import { BudgetType, serviceSchema, ServiceType } from "..";
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
-  onAddService: UseFieldArrayAppend<BudgetType, "services">;
+  onAddService?: UseFieldArrayAppend<BudgetType, "services">;
+  onUpdateServices?: UseFieldArrayUpdate<BudgetType, "services">;
+  onRemoveServices?: UseFieldArrayRemove;
   service?: ServiceType;
+  serviceIndex?: number;
 }
 
 export function ServiceModal({
   visible,
   onClose,
   onAddService,
+  onUpdateServices,
+  onRemoveServices,
   service,
+  serviceIndex,
 }: FilterModalProps) {
   const {
     control,
@@ -37,13 +49,27 @@ export function ServiceModal({
   });
 
   function handleAddService(data: ServiceType) {
-    onAddService(data);
+    if (onAddService) onAddService(data);
     reset();
     onClose();
   }
 
   function handleCancel() {
     reset();
+    onClose();
+  }
+
+  function handleUpdateService(data: ServiceType) {
+    if (onUpdateServices && typeof serviceIndex === "number")
+      onUpdateServices(serviceIndex, data);
+
+    onClose();
+  }
+
+  function handleRemoveService() {
+    if (onRemoveServices && typeof serviceIndex === "number")
+      onRemoveServices(serviceIndex);
+
     onClose();
   }
 
@@ -151,7 +177,11 @@ export function ServiceModal({
 
         <View style={styles.footer}>
           {service ? (
-            <Button variant="destructive" icon="delete-outline" />
+            <Button
+              variant="destructive"
+              icon="delete-outline"
+              onPress={handleRemoveService}
+            />
           ) : (
             <Button
               variant="secondary"
@@ -163,8 +193,12 @@ export function ServiceModal({
           <Button
             variant="primary"
             icon="check"
-            text="Salvar"
-            onPress={handleSubmit(handleAddService)}
+            text={service ? "Editar" : "Salvar"}
+            onPress={
+              service
+                ? handleSubmit(handleUpdateService)
+                : handleSubmit(handleAddService)
+            }
           />
         </View>
       </View>

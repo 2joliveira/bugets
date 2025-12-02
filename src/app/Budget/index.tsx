@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, Image, Text } from "react-native";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { StackRoutesList } from "@/routes/StackRoutes";
+import { useBudgets } from "@/context/BudgetContext";
+import { colors, fontFamily } from "@/theme";
 import { Button, InputCheckBox, InputText } from "@/components";
-import { colors } from "@/theme";
 import { STATUS_OPTIONS } from "../Home";
 import {
   InfosCard,
@@ -12,10 +16,6 @@ import {
   ServiceInfos,
   ServiceModal,
 } from "./components";
-import { StackRoutesList } from "@/routes/StackRoutes";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
-import { useBudgets } from "@/context/BudgetContext";
 
 export const serviceSchema = z.object({
   id: z.uuidv4(),
@@ -60,7 +60,7 @@ export function Budget() {
     },
   });
 
-  const { fields, append } = useFieldArray({
+  const { fields, append, update, remove } = useFieldArray({
     control,
     name: "services",
   });
@@ -132,8 +132,33 @@ export function Budget() {
             error={errors.services?.message}
           >
             <View style={styles.content}>
-              {fields.map((service) => (
-                <ServiceInfos key={service.id} {...service} />
+              {!fields.length && (
+                <View>
+                  <Image
+                    source={require("../../assets/no-results.jpg")}
+                    style={{ width: "100%", height: 100 }}
+                    resizeMode="contain"
+                  />
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      ...fontFamily.textXs,
+                      color: colors.gray[500],
+                    }}
+                  >
+                    Adicione um serviço
+                  </Text>
+                </View>
+              )}
+
+              {fields.map((service, index) => (
+                <ServiceInfos
+                  key={service.id}
+                  onUpdateServices={update}
+                  onRemoveServices={remove}
+                  index={index}
+                  service={service}
+                />
               ))}
             </View>
 
