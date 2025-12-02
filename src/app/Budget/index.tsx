@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, View, ScrollView, Image, Text } from "react-native";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import uuid from "react-native-uuid";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -26,11 +27,16 @@ export const serviceSchema = z.object({
 });
 
 const budgetSchema = z.object({
+  id: z.uuidv4(),
   client: z.string().min(1, "Nome do cliente é obrigatório."),
   title: z.string().min(1, "Título do orçamento é obrigatório."),
   services: z.array(serviceSchema).min(1, "Adicione ao menos um serviço"),
   status: z.enum(STATUS_OPTIONS, { error: "Status é obrigatório." }),
   percentageDiscount: z.number().optional(),
+  discountValue: z.number().optional(),
+  budgetPrice: z.number(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 export type ServiceType = z.infer<typeof serviceSchema>;
@@ -49,14 +55,21 @@ export function Budget() {
     handleSubmit,
     formState: { errors },
     reset,
+    getValues,
+    setValue,
   } = useForm<BudgetType>({
     resolver: zodResolver(budgetSchema),
     defaultValues: {
+      id: uuid.v4(),
       client: "",
       title: "",
       services: [],
       status: undefined,
       percentageDiscount: 0,
+      discountValue: 0,
+      budgetPrice: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 
@@ -173,7 +186,11 @@ export function Budget() {
           </InfosCard>
 
           <InfosCard title="Investimentos" icon="credit-card">
-            <Investments control={control} />
+            <Investments
+              control={control}
+              services={getValues("services")}
+              onChangeValue={setValue}
+            />
           </InfosCard>
         </View>
 

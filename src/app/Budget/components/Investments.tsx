@@ -1,23 +1,50 @@
 import { colors, fontFamily } from "@/theme";
-import { Controller, ControllerProps } from "react-hook-form";
+import { Controller, ControllerProps, UseFormSetValue } from "react-hook-form";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { BudgetType } from "..";
+import { BudgetType, ServiceType } from "..";
+import { useEffect, useMemo, useReducer, useState } from "react";
+import { formatPrice } from "@/utils/formatPrice";
 
 interface InvestimentsProps {
   control: ControllerProps<BudgetType>["control"];
+  services: ServiceType[];
+  onChangeValue: UseFormSetValue<BudgetType>;
 }
 
-export function Investments({ control }: InvestimentsProps) {
+export function Investments({
+  services,
+  control,
+  onChangeValue,
+}: InvestimentsProps) {
+  const [total, setTotal] = useState(0);
+  const [descount, setDescount] = useState(0);
+  const [currentPercentage, setCurrentPercentage] = useState(0);
+
+  useEffect(() => {
+    const newTotal = services.reduce(
+      (acc, service) => acc + service.price * service.quantity,
+      0
+    );
+
+    const newDiscount = (currentPercentage / 100) * newTotal;
+
+    setTotal(newTotal);
+    setDescount(newDiscount);
+
+    onChangeValue("discountValue", newDiscount);
+    onChangeValue("budgetPrice", newTotal - newDiscount);
+  }, [currentPercentage, services]);
+
   return (
     <View style={{ gap: 12, marginTop: 20 }}>
       <View style={[styles.infosContainer, { paddingHorizontal: 20 }]}>
         <Text style={styles.text}>Subtotal</Text>
 
         <View style={styles.subtotalValuesContainer}>
-          <Text style={styles.quantity}>8 itens</Text>
+          <Text style={styles.quantity}>{`${services.length} itens`}</Text>
           <View style={styles.priceContainer}>
             <Text style={styles.currencySymbol}>R$</Text>
-            <Text style={styles.priceValue}>3.847,5</Text>
+            <Text style={styles.priceValue}>{formatPrice(total)}</Text>
           </View>
         </View>
       </View>
@@ -44,6 +71,7 @@ export function Investments({ control }: InvestimentsProps) {
                   const limited = Math.min(Number(onlyNumbers), 100);
 
                   onChange(Number(limited));
+                  setCurrentPercentage(Number(limited));
                 }}
               />
             )}
@@ -52,25 +80,33 @@ export function Investments({ control }: InvestimentsProps) {
           <Text style={styles.percentage}>%</Text>
         </View>
 
-        <View style={styles.priceContainer}>
-          <Text style={[styles.currencySymbol, { color: colors.danger.base }]}>
-            - R$
-          </Text>
-          <Text style={[styles.priceValue, { color: colors.danger.base }]}>
-            200,00
-          </Text>
-        </View>
+        {descount > 0 && (
+          <View style={styles.priceContainer}>
+            <Text
+              style={[styles.currencySymbol, { color: colors.danger.base }]}
+            >
+              - R$
+            </Text>
+            <Text style={[styles.priceValue, { color: colors.danger.base }]}>
+              {formatPrice(descount)}
+            </Text>
+          </View>
+        )}
       </View>
 
       <View style={styles.totalContainer}>
         <Text style={styles.totalText}>Valor total</Text>
 
         <View>
-          <Text style={styles.totalPrice}>R$ 4.050,00</Text>
+          {descount > 0 && (
+            <Text style={styles.totalPrice}>{`R$ ${formatPrice(total)}`}</Text>
+          )}
 
           <View style={styles.priceContainer}>
             <Text style={styles.currencySymbol}>R$</Text>
-            <Text style={styles.totalDiscount}>3.847,50</Text>
+            <Text style={styles.totalDiscount}>
+              {formatPrice(total - descount)}
+            </Text>
           </View>
         </View>
       </View>
