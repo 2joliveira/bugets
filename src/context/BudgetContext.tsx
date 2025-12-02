@@ -40,14 +40,9 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
   const addBudget = useCallback(async (budget: BudgetType) => {
     setLoading(true);
 
-    const newBudget: BudgetItem = {
-      id: String(uuid.v4()),
-      ...budget,
-    };
+    await createBudget(budget);
 
-    await createBudget(newBudget);
-
-    setBudgets((prev) => [...prev, newBudget]);
+    setBudgets((prev) => [...prev, budget]);
 
     setLoading(false);
   }, []);

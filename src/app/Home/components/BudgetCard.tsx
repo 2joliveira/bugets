@@ -2,13 +2,12 @@ import { StyleSheet, Text, View } from "react-native";
 import { colors, fontFamily } from "@/theme";
 import { StatusTag } from "@/components/StatusTag";
 import { BudgetType } from "@/app/Budget";
+import { formatPrice } from "@/utils/formatPrice";
 
-export function BudgetCard({ client, title, status }: BudgetType) {
+export function BudgetCard({ client, title, status, budgetPrice }: BudgetType) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        {title}
-      </Text>
+      <Text style={styles.title}>{title}</Text>
       <View style={styles.status}>
         <StatusTag status={status} />
       </View>
@@ -17,7 +16,7 @@ export function BudgetCard({ client, title, status }: BudgetType) {
 
         <View style={styles.priceContainer}>
           <Text style={styles.currencySymbol}>R$</Text>
-          <Text style={styles.price}>22.300,00</Text>
+          <Text style={styles.price}>{formatPrice(budgetPrice)}</Text>
         </View>
       </View>
     </View>
