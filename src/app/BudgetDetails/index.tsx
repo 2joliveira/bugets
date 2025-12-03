@@ -1,26 +1,11 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { useBudgets } from "@/context/BudgetContext";
 import { StackRoutesProps } from "@/routes/StackRoutes";
+import { BudgetItem } from "@/storage/budgetsStorage";
+import { useBudgets } from "@/context/BudgetContext";
 import { colors } from "@/theme";
 import { Button } from "@/components";
 import { Details, InfosCard, ServiceInfos, Total } from "./components";
-import { useEffect, useState } from "react";
-import { BudgetItem } from "@/storage/budgetsStorage";
-
-const serviceMock = [
-  {
-    title: "Design de interfaces",
-    subtitle: "Criação de wireframes e protótipos de alta fidelidade",
-    price: 3847.5,
-    quantity: 1,
-  },
-  {
-    title: "Implantação e suporte",
-    subtitle: "Publicação nas lojas de aplicativos e suporte técnico",
-    price: 2200,
-    quantity: 1,
-  },
-];
 
 export function BudgetDetails({
   navigation,
