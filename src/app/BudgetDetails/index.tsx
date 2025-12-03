@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { StackRoutesProps } from "@/routes/StackRoutes";
-import { BudgetItem } from "@/storage/budgetsStorage";
 import { useBudgets } from "@/context/BudgetContext";
 import { colors } from "@/theme";
 import { Button } from "@/components";
@@ -11,30 +9,19 @@ export function BudgetDetails({
   navigation,
   route,
 }: StackRoutesProps<"budgetDetails">) {
-  const [currentBudget, setCurrentBudget] = useState<BudgetItem | undefined>(
-    undefined
-  );
-  const { deleteBudget, getBudgetById } = useBudgets();
+  const { onDeleteBudget, selectedBudget } = useBudgets();
   const { id } = route.params;
 
   function handleDeleteBudget() {
-    deleteBudget(id);
+    onDeleteBudget(id);
     navigation.goBack();
   }
 
-  async function loadBudget() {
-    const budget = await getBudgetById(id);
-
-    if (budget) {
-      setCurrentBudget(budget);
-    }
+  function handleEditBudget() {
+    navigation.navigate("budget");
   }
 
-  useEffect(() => {
-    loadBudget();
-  }, []);
-
-  if (!currentBudget) return;
+  if (!selectedBudget) return;
 
   const {
     client,
@@ -45,7 +32,7 @@ export function BudgetDetails({
     budgetPrice,
     descountValue,
     percentageDiscount,
-  } = currentBudget;
+  } = selectedBudget;
 
   return (
     <View style={styles.container}>
@@ -80,7 +67,7 @@ export function BudgetDetails({
             onPress={handleDeleteBudget}
           />
           <Button variant="secondary" icon="content-copy" />
-          <Button variant="secondary" icon="edit" />
+          <Button variant="secondary" icon="edit" onPress={handleEditBudget} />
         </View>
 
         <Button variant="primary" icon="send" text="Compartilhar" />

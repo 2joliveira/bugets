@@ -45,7 +45,7 @@ export type BudgetType = z.infer<typeof budgetSchema>;
 
 export function Budget() {
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const { addBudget, loadBudgets } = useBudgets();
+  const { onAddBudget, onUpdateBudget, selectedBudget } = useBudgets();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "budget">>();
@@ -59,18 +59,24 @@ export function Budget() {
     setValue,
   } = useForm<BudgetType>({
     resolver: zodResolver(budgetSchema),
-    defaultValues: {
-      id: uuid.v4(),
-      client: "",
-      title: "",
-      services: [],
-      status: undefined,
-      percentageDiscount: 0,
-      descountValue: 0,
-      budgetPrice: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
+    defaultValues: selectedBudget
+      ? {
+          ...selectedBudget,
+          createdAt: new Date(selectedBudget.createdAt),
+          updatedAt: new Date(),
+        }
+      : {
+          id: uuid.v4(),
+          client: "",
+          title: "",
+          services: [],
+          status: undefined,
+          percentageDiscount: 0,
+          descountValue: 0,
+          budgetPrice: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
   });
 
   const { fields, append, update, remove } = useFieldArray({
@@ -79,10 +85,16 @@ export function Budget() {
   });
 
   function onSubmit(data: BudgetType) {
-    addBudget(data);
-    reset();
-    loadBudgets();
-    navigation.navigate("home");
+    if (selectedBudget) {
+      onUpdateBudget(data);
+
+      navigation.goBack();
+    } else {
+      onAddBudget(data);
+
+      reset();
+      navigation.navigate("home");
+    }
   }
 
   return (

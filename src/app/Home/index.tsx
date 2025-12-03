@@ -13,14 +13,15 @@ export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
 export function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
+  const { budgets, onSelectBudget } = useBudgets();
+
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "home">>();
 
-  function handleNavigate(id: string) {
+  function handleSelectBudget(id: string) {
+    onSelectBudget(id);
     navigation.navigate("budgetDetails", { id });
   }
-
-  const { budgets } = useBudgets();
 
   return (
     <View style={styles.container}>
@@ -39,8 +40,11 @@ export function Home() {
         <View style={styles.budgetslist}>
           {budgets &&
             budgets.length > 0 &&
-            budgets.map(({ id, ...budget }) => (
-              <TouchableOpacity key={id} onPress={() => handleNavigate(id)}>
+            budgets.map((budget) => (
+              <TouchableOpacity
+                key={budget.id}
+                onPress={() => handleSelectBudget(budget.id)}
+              >
                 <BudgetCard {...budget} />
               </TouchableOpacity>
             ))}

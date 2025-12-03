@@ -4,7 +4,13 @@ import { StatusTag } from "@/components/StatusTag";
 import { BudgetType } from "@/app/Budget";
 import { formatPrice } from "@/utils/formatPrice";
 
-export function BudgetCard({ client, title, status, budgetPrice }: BudgetType) {
+export function BudgetCard({
+  client,
+  title,
+  status,
+  budgetPrice,
+  descountValue,
+}: BudgetType) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
@@ -16,7 +22,11 @@ export function BudgetCard({ client, title, status, budgetPrice }: BudgetType) {
 
         <View style={styles.priceContainer}>
           <Text style={styles.currencySymbol}>R$</Text>
-          <Text style={styles.price}>{formatPrice(budgetPrice)}</Text>
+          <Text style={styles.price}>
+            {formatPrice(
+              descountValue ? budgetPrice - descountValue : budgetPrice
+            )}
+          </Text>
         </View>
       </View>
     </View>

@@ -11,16 +11,19 @@ import {
   getBudget,
   createBudget,
   removeBudget,
-  type BudgetItem,
+  updateBudget,
 } from "@/storage/budgetsStorage";
 
 interface BudgetContextData {
-  budgets: BudgetItem[];
+  budgets: BudgetType[];
   loading: boolean;
-  addBudget: (budget: BudgetType) => Promise<void>;
+  onAddBudget: (budget: BudgetType) => Promise<void>;
   loadBudgets: () => Promise<void>;
-  deleteBudget: (id: string) => Promise<void>;
-  getBudgetById: (id: string) => Promise<BudgetItem | undefined>;
+  onDeleteBudget: (id: string) => Promise<void>;
+  getBudgetById: (id: string) => Promise<BudgetType | undefined>;
+  selectedBudget: BudgetType | null;
+  onSelectBudget: (id?: string) => Promise<void>;
+  onUpdateBudget: (budget: BudgetType) => void;
 }
 
 export const BudgetContext = createContext<BudgetContextData>(
@@ -28,7 +31,8 @@ export const BudgetContext = createContext<BudgetContextData>(
 );
 
 export function BudgetProvider({ children }: { children: React.ReactNode }) {
-  const [budgets, setBudgets] = useState<BudgetItem[]>([]);
+  const [budgets, setBudgets] = useState<BudgetType[]>([]);
+  const [selectedBudget, setSelectedBudget] = useState<BudgetType | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function loadBudgets() {
@@ -39,7 +43,7 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
   }
 
   const getBudgetById = useCallback(
-    async (id: string): Promise<BudgetItem | undefined> => {
+    async (id: string): Promise<BudgetType | undefined> => {
       setLoading(true);
 
       const budget = await getBudget(id);
@@ -53,20 +57,39 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  const addBudget = useCallback(async (budget: BudgetType) => {
+  const onAddBudget = useCallback(async (budget: BudgetType) => {
     setLoading(true);
 
     await createBudget(budget);
 
-    setBudgets((prev) => [...prev, budget]);
+    loadBudgets();
 
     setLoading(false);
   }, []);
 
-  const deleteBudget = useCallback(async (id: string) => {
+  const onDeleteBudget = useCallback(async (id: string) => {
     await removeBudget(id);
 
     setBudgets((prev) => prev.filter((budget) => budget.id !== id));
+  }, []);
+
+  const onUpdateBudget = useCallback(async (budget: BudgetType) => {
+    setLoading(true);
+
+    await updateBudget(budget);
+
+    setSelectedBudget(budget);
+    loadBudgets();
+
+    setLoading(false);
+  }, []);
+
+  const onSelectBudget = useCallback(async (id?: string) => {
+    if (!id) return setSelectedBudget(null);
+
+    const budget = await getBudgetById(id);
+
+    if (budget) setSelectedBudget(budget);
   }, []);
 
   useEffect(() => {
@@ -78,10 +101,13 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
       value={{
         budgets,
         loading,
-        addBudget,
+        onAddBudget,
         loadBudgets,
-        deleteBudget,
+        onDeleteBudget,
         getBudgetById,
+        selectedBudget,
+        onSelectBudget,
+        onUpdateBudget,
       }}
     >
       {children}

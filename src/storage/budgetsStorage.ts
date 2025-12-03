@@ -3,11 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BUDGET_STORAGE_KEY = "@budgets";
 
-export interface BudgetItem extends BudgetType {
-  id: string;
-}
-
-export async function getBudgets(): Promise<BudgetItem[]> {
+export async function getBudgets(): Promise<BudgetType[]> {
   try {
     const storage = await AsyncStorage.getItem(BUDGET_STORAGE_KEY);
 
@@ -22,7 +18,7 @@ export async function getBudgets(): Promise<BudgetItem[]> {
   }
 }
 
-export async function getBudget(id: string): Promise<BudgetItem | undefined> {
+export async function getBudget(id: string): Promise<BudgetType | undefined> {
   try {
     const budgets = await getBudgets();
 
@@ -36,7 +32,7 @@ export async function getBudget(id: string): Promise<BudgetItem | undefined> {
   }
 }
 
-export async function createBudget(budget: BudgetItem): Promise<void> {
+export async function createBudget(budget: BudgetType): Promise<void> {
   try {
     const currentBudgets = await getBudgets();
 
@@ -59,6 +55,25 @@ export async function removeBudget(id: string): Promise<void> {
     await AsyncStorage.setItem(
       BUDGET_STORAGE_KEY,
       JSON.stringify(updatedBudgets)
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function updateBudget(budget: BudgetType) {
+  try {
+    const currentBudgets = await getBudgets();
+
+    if (!currentBudgets) return null;
+
+    const filteredBudgets = currentBudgets.filter(
+      (currentBudget) => currentBudget.id !== budget.id
+    );
+
+    await AsyncStorage.setItem(
+      BUDGET_STORAGE_KEY,
+      JSON.stringify([...filteredBudgets, budget])
     );
   } catch (error) {
     console.error(error);
