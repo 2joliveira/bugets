@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackRoutesList } from "@/routes/StackRoutes";
 import { colors } from "@/theme";
 import { Button, InputText } from "@/components";
-import { BudgetCard, FilterModal, MainHeader } from "./components";
+import { BudgetCard, FilterModal } from "./components";
 import { useBudgets } from "@/context/BudgetContext";
 
 export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
@@ -25,8 +25,6 @@ export function Home() {
 
   return (
     <View style={styles.container}>
-      <MainHeader />
-
       <View style={styles.filters}>
         <InputText icon="search" placeholder="Título ou Cliente" />
         <Button

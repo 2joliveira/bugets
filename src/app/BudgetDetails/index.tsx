@@ -79,8 +79,6 @@ export function BudgetDetails({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderTopWidth: 1,
-    borderTopColor: colors.gray[300],
     backgroundColor: colors.white,
     justifyContent: "space-between",
   },

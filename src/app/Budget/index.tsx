@@ -247,8 +247,6 @@ const styles = StyleSheet.create({
     height: "100%",
     flex: 1,
     padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: colors.gray[300],
     backgroundColor: colors.white,
     gap: 22,
   },
