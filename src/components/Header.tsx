@@ -2,13 +2,18 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors, fontFamily } from "@/theme";
 import { useNavigation } from "@react-navigation/native";
+import { useBudgets } from "@/context/BudgetContext";
+import { StatusTag } from "./StatusTag";
 
 interface HeaderProps {
-  budgetId?: string;
+  params?: {
+    id?: string;
+  };
 }
 
-export function Header({ budgetId }: HeaderProps) {
+export function Header({ params }: HeaderProps) {
   const navigation = useNavigation();
+  const { selectedBudget } = useBudgets();
 
   return (
     <View style={styles.container}>
@@ -22,12 +27,15 @@ export function Header({ budgetId }: HeaderProps) {
         </TouchableOpacity>
 
         <Text style={styles.headerTitle}>Orçamento</Text>
-        {budgetId && <Text style={styles.headerTitle}>{`# ${budgetId}`}</Text>}
+        {params && params.id && (
+          <Text
+            style={[styles.headerTitle, styles.budgteId]}
+            numberOfLines={1}
+          >{`# ${params.id}`}</Text>
+        )}
       </View>
 
-      <View>
-        <Text>status</Text>
-      </View>
+      {selectedBudget && <StatusTag status={selectedBudget.status} />}
     </View>
   );
 }
@@ -54,5 +62,8 @@ const styles = StyleSheet.create({
   headerTitle: {
     ...fontFamily.titleSm,
     color: colors.gray[700],
+  },
+  budgteId: {
+    width: 80,
   },
 });

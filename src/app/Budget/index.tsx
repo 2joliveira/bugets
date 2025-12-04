@@ -210,7 +210,7 @@ export function Budget() {
           <Button
             variant="secondary"
             text="Cancelar"
-            onPress={() => navigation.navigate("home")}
+            onPress={() => navigation.goBack()}
           />
           <Button
             variant="primary"
