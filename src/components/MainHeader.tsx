@@ -4,12 +4,16 @@ import { StyleSheet, Text, View } from "react-native";
 import type { StackRoutesList } from "@/routes/StackRoutes";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useBudgets } from "@/context/BudgetContext";
 
 export function MainHeader() {
+  const { onSelectBudget } = useBudgets();
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "home">>();
 
   function handleNavigate() {
+    onSelectBudget();
+    
     navigation.navigate("budget");
   }
 
@@ -36,6 +40,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: colors.gray[300],
+    backgroundColor: colors.white,
     flexDirection: "row",
     justifyContent: "space-between",
   },

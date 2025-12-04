@@ -33,7 +33,7 @@ const budgetSchema = z.object({
   services: z.array(serviceSchema).min(1, "Adicione ao menos um serviço"),
   status: z.enum(STATUS_OPTIONS, { error: "Status é obrigatório." }),
   percentageDiscount: z.number().optional(),
-  discountValue: z.number().optional(),
+  descountValue: z.number().optional(),
   budgetPrice: z.number(),
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -45,7 +45,7 @@ export type BudgetType = z.infer<typeof budgetSchema>;
 
 export function Budget() {
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const { addBudget, loadBudgets } = useBudgets();
+  const { onAddBudget, onUpdateBudget, selectedBudget } = useBudgets();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "budget">>();
@@ -59,18 +59,24 @@ export function Budget() {
     setValue,
   } = useForm<BudgetType>({
     resolver: zodResolver(budgetSchema),
-    defaultValues: {
-      id: uuid.v4(),
-      client: "",
-      title: "",
-      services: [],
-      status: undefined,
-      percentageDiscount: 0,
-      discountValue: 0,
-      budgetPrice: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
+    defaultValues: selectedBudget
+      ? {
+          ...selectedBudget,
+          createdAt: new Date(selectedBudget.createdAt),
+          updatedAt: new Date(),
+        }
+      : {
+          id: uuid.v4(),
+          client: "",
+          title: "",
+          services: [],
+          status: undefined,
+          percentageDiscount: 0,
+          descountValue: 0,
+          budgetPrice: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
   });
 
   const { fields, append, update, remove } = useFieldArray({
@@ -79,10 +85,16 @@ export function Budget() {
   });
 
   function onSubmit(data: BudgetType) {
-    addBudget(data);
-    reset();
-    loadBudgets();
-    navigation.navigate("home");
+    if (selectedBudget) {
+      onUpdateBudget(data);
+
+      navigation.goBack();
+    } else {
+      onAddBudget(data);
+
+      reset();
+      navigation.navigate("home");
+    }
   }
 
   return (
@@ -235,8 +247,6 @@ const styles = StyleSheet.create({
     height: "100%",
     flex: 1,
     padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: colors.gray[300],
     backgroundColor: colors.white,
     gap: 22,
   },

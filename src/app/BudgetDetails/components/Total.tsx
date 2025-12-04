@@ -1,56 +1,81 @@
-import { colors, fontFamily } from "@/theme";
-import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { colors, fontFamily } from "@/theme";
+import { formatPrice } from "@/utils/formatPrice";
 
-export function Total() {
+interface TotalProps {
+  budgetPrice: number;
+  descountValue?: number;
+  percentageDiscount?: number;
+}
+
+export function Total({
+  budgetPrice,
+  descountValue,
+  percentageDiscount,
+}: TotalProps) {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
-        <MaterialIcons name="storefront" size={20} color={colors.purple.base} />
+        <MaterialIcons
+          name="credit-card"
+          size={20}
+          color={colors.purple.base}
+        />
       </View>
 
       <View style={{ flex: 1, padding: 5, gap: 8 }}>
-        <View style={styles.line}>
-          <Text style={styles.infoTitle}>Subtotal</Text>
-          <Text
-            style={[
-              styles.price,
-              { color: colors.gray[600], textDecorationLine: "line-through" },
-            ]}
-          >
-            R$ 4.050,00
-          </Text>
-        </View>
+        {!!descountValue && !!percentageDiscount && (
+          <>
+            <View style={styles.line}>
+              <Text style={styles.infoTitle}>Subtotal</Text>
+              <Text
+                style={[
+                  styles.price,
+                  {
+                    color: colors.gray[600],
+                    textDecorationLine: "line-through",
+                  },
+                ]}
+              >
+                {`R$ ${formatPrice(budgetPrice)}`}
+              </Text>
+            </View>
+
+            <View
+              style={[
+                styles.line,
+                {
+                  paddingBottom: 14,
+                  borderBottomWidth: 1,
+                  borderColor: colors.gray[200],
+                },
+              ]}
+            >
+              <View style={[styles.line, { gap: 8 }]}>
+                <Text style={styles.infoTitle}>Desconto</Text>
+
+                <Text style={styles.percentage}>
+                  {`${percentageDiscount}% off`}
+                </Text>
+              </View>
+
+              <Text style={[styles.price, { color: colors.success.dark }]}>
+                {`- R$ ${formatPrice(descountValue || 0)}`}
+              </Text>
+            </View>
+          </>
+        )}
 
         <View style={styles.line}>
-          <View style={[styles.line, { gap: 8 }]}>
-            <Text style={styles.infoTitle}>Desconto</Text>
-            <Text style={styles.percentage}>5% off</Text>
-          </View>
-          <Text style={[styles.price, { color: colors.success.dark }]}>
-            - R$ 200,00
-          </Text>
-        </View>
-
-        <View
-          style={[
-            styles.line,
-            {
-              paddingTop: 16,
-              borderTopWidth: 1,
-              borderColor: colors.gray[200],
-            },
-          ]}
-        >
           <Text style={styles.totalText}>Investimento total</Text>
-          <View
-            style={[
-              styles.line,
-              { alignItems: "baseline", gap: 5 },
-            ]}
-          >
+          <View style={[styles.line, { alignItems: "baseline", gap: 5 }]}>
             <Text style={styles.currencySymbol}>R$</Text>
-            <Text style={styles.totalPrice}>3.847,50</Text>
+            <Text style={styles.totalPrice}>
+              {formatPrice(
+                descountValue ? budgetPrice - descountValue : budgetPrice
+              )}
+            </Text>
           </View>
         </View>
       </View>

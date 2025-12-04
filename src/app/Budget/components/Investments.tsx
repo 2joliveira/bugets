@@ -1,9 +1,9 @@
-import { colors, fontFamily } from "@/theme";
-import { Controller, ControllerProps, UseFormSetValue } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { BudgetType, ServiceType } from "..";
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { Controller, ControllerProps, UseFormSetValue } from "react-hook-form";
+import { colors, fontFamily } from "@/theme";
 import { formatPrice } from "@/utils/formatPrice";
+import { BudgetType, ServiceType } from "..";
 
 interface InvestimentsProps {
   control: ControllerProps<BudgetType>["control"];
@@ -21,18 +21,18 @@ export function Investments({
   const [currentPercentage, setCurrentPercentage] = useState(0);
 
   useEffect(() => {
-    const newTotal = services.reduce(
+    const total = services.reduce(
       (acc, service) => acc + service.price * service.quantity,
       0
     );
 
-    const newDiscount = (currentPercentage / 100) * newTotal;
+    const descount = (currentPercentage / 100) * total;
 
-    setTotal(newTotal);
-    setDescount(newDiscount);
+    setTotal(total);
+    setDescount(descount);
 
-    onChangeValue("discountValue", newDiscount);
-    onChangeValue("budgetPrice", newTotal - newDiscount);
+    onChangeValue("descountValue", descount);
+    onChangeValue("budgetPrice", total);
   }, [currentPercentage, services]);
 
   return (

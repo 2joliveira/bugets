@@ -1,51 +1,62 @@
 import { StyleSheet, View } from "react-native";
-import { useBudgets } from "@/context/BudgetContext";
 import { StackRoutesProps } from "@/routes/StackRoutes";
+import { useBudgets } from "@/context/BudgetContext";
 import { colors } from "@/theme";
 import { Button } from "@/components";
 import { Details, InfosCard, ServiceInfos, Total } from "./components";
-
-const serviceMock = [
-  {
-    title: "Design de interfaces",
-    subtitle: "Criação de wireframes e protótipos de alta fidelidade",
-    price: 3847.5,
-    quantity: 1,
-  },
-  {
-    title: "Implantação e suporte",
-    subtitle: "Publicação nas lojas de aplicativos e suporte técnico",
-    price: 2200,
-    quantity: 1,
-  },
-];
 
 export function BudgetDetails({
   navigation,
   route,
 }: StackRoutesProps<"budgetDetails">) {
-  const { deleteBudget } = useBudgets();
+  const { onDeleteBudget, selectedBudget } = useBudgets();
   const { id } = route.params;
 
   function handleDeleteBudget() {
-    deleteBudget(id);
+    onDeleteBudget(id);
     navigation.goBack();
   }
+
+  function handleEditBudget() {
+    navigation.navigate("budget");
+  }
+
+  if (!selectedBudget) return;
+
+  const {
+    client,
+    title,
+    createdAt,
+    updatedAt,
+    services,
+    budgetPrice,
+    descountValue,
+    percentageDiscount,
+  } = selectedBudget;
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Details />
+        <Details
+          client={client}
+          title={title}
+          createdAt={createdAt}
+          updatedAt={updatedAt}
+        />
 
         <InfosCard title="Serviços inclusos" icon="text-snippet">
           <View style={styles.serviceContent}>
-            {serviceMock.map((service) => (
-              <ServiceInfos key={`service-${service.title}`} {...service} />
+            {services.map((service) => (
+              <ServiceInfos key={service.id} {...service} />
             ))}
           </View>
         </InfosCard>
 
-        <Total />
+        <Total
+          budgetPrice={budgetPrice}
+          descountValue={descountValue}
+          percentageDiscount={percentageDiscount}
+        />
       </View>
 
       <View style={styles.footer}>
@@ -56,7 +67,7 @@ export function BudgetDetails({
             onPress={handleDeleteBudget}
           />
           <Button variant="secondary" icon="content-copy" />
-          <Button variant="secondary" icon="edit" />
+          <Button variant="secondary" icon="edit" onPress={handleEditBudget} />
         </View>
 
         <Button variant="primary" icon="send" text="Compartilhar" />
@@ -68,8 +79,6 @@ export function BudgetDetails({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderTopWidth: 1,
-    borderTopColor: colors.gray[300],
     backgroundColor: colors.white,
     justifyContent: "space-between",
   },

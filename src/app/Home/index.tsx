@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackRoutesList } from "@/routes/StackRoutes";
 import { colors } from "@/theme";
 import { Button, InputText } from "@/components";
-import { BudgetCard, FilterModal, MainHeader } from "./components";
+import { BudgetCard, FilterModal } from "./components";
 import { useBudgets } from "@/context/BudgetContext";
 
 export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
@@ -13,19 +13,18 @@ export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
 export function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
+  const { budgets, onSelectBudget } = useBudgets();
+
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "home">>();
 
-  function handleNavigate(id: string) {
+  function handleSelectBudget(id: string) {
+    onSelectBudget(id);
     navigation.navigate("budgetDetails", { id });
   }
 
-  const { budgets } = useBudgets();
-
   return (
     <View style={styles.container}>
-      <MainHeader />
-
       <View style={styles.filters}>
         <InputText icon="search" placeholder="Título ou Cliente" />
         <Button
@@ -39,8 +38,11 @@ export function Home() {
         <View style={styles.budgetslist}>
           {budgets &&
             budgets.length > 0 &&
-            budgets.map(({ id, ...budget }) => (
-              <TouchableOpacity key={id} onPress={() => handleNavigate(id)}>
+            budgets.map((budget) => (
+              <TouchableOpacity
+                key={budget.id}
+                onPress={() => handleSelectBudget(budget.id)}
+              >
                 <BudgetCard {...budget} />
               </TouchableOpacity>
             ))}

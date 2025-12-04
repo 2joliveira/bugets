@@ -3,7 +3,7 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import { Home, Budget, BudgetDetails } from "@/app";
-import { colors, fontFamily } from "@/theme";
+import { Header, MainHeader } from "@/components";
 
 export type StackRoutesList = {
   home: undefined;
@@ -21,40 +21,17 @@ export function StackRoutes() {
     <Stack.Navigator
       initialRouteName="home"
       screenOptions={{
-        headerBackVisible: true,
-        headerStyle: {
-          backgroundColor: colors.white,
-        },
-        headerShadowVisible: false,
-        headerTintColor: colors.gray[700],
-        headerTitleStyle: {
-          ...fontFamily.titleSm,
-        },
+        header: ({ route }) =>
+          route.name === "home" ? <MainHeader /> : <Header />,
+        statusBarStyle: "dark",
+        statusBarAnimation: "fade"
       }}
     >
-      <Stack.Screen
-        name="home"
-        component={Home}
-        options={{
-          headerShown: false,
-        }}
-      />
+      <Stack.Screen name="home" component={Home} />
 
-      <Stack.Screen
-        name="budget"
-        component={Budget}
-        options={{
-          title: "Orçamento",
-        }}
-      />
+      <Stack.Screen name="budget" component={Budget} />
 
-      <Stack.Screen
-        name="budgetDetails"
-        component={BudgetDetails}
-        options={({ route }) => ({
-          title: `Orçamento #${route.params.id}`,
-        })}
-      />
+      <Stack.Screen name="budgetDetails" component={BudgetDetails} />
     </Stack.Navigator>
   );
 }
