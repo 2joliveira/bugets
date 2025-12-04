@@ -22,9 +22,13 @@ export function StackRoutes() {
       initialRouteName="home"
       screenOptions={{
         header: ({ route }) =>
-          route.name === "home" ? <MainHeader /> : <Header />,
+          route.name === "home" ? (
+            <MainHeader />
+          ) : (
+            <Header params={route.params} />
+          ),
         statusBarStyle: "dark",
-        statusBarAnimation: "fade"
+        statusBarAnimation: "fade",
       }}
     >
       <Stack.Screen name="home" component={Home} />
