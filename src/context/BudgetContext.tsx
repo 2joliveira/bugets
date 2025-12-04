@@ -5,6 +5,7 @@ import {
   useState,
   useCallback,
 } from "react";
+import uuid from "react-native-uuid";
 import { BudgetType } from "@/app";
 import {
   getBudgets,
@@ -24,6 +25,7 @@ interface BudgetContextData {
   selectedBudget: BudgetType | null;
   onSelectBudget: (id?: string) => Promise<void>;
   onUpdateBudget: (budget: BudgetType) => void;
+  onDuplicateBudget: (budget: BudgetType) => void;
 }
 
 export const BudgetContext = createContext<BudgetContextData>(
@@ -96,6 +98,16 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
     loadBudgets();
   }, []);
 
+  const onDuplicateBudget = useCallback(async (budget: BudgetType) => {
+    setLoading(true);
+
+    await createBudget({ ...budget, id: uuid.v4() });
+
+    loadBudgets();
+
+    setLoading(false);
+  }, []);
+
   return (
     <BudgetContext.Provider
       value={{
@@ -108,6 +120,7 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
         selectedBudget,
         onSelectBudget,
         onUpdateBudget,
+        onDuplicateBudget,
       }}
     >
       {children}

@@ -64,6 +64,6 @@ const styles = StyleSheet.create({
     color: colors.gray[700],
   },
   budgteId: {
-    width: 100,
+    width: 80,
   },
 });

@@ -9,7 +9,7 @@ export function BudgetDetails({
   navigation,
   route,
 }: StackRoutesProps<"budgetDetails">) {
-  const { onDeleteBudget, selectedBudget } = useBudgets();
+  const { onDeleteBudget, selectedBudget, onDuplicateBudget } = useBudgets();
   const { id } = route.params;
 
   function handleDeleteBudget() {
@@ -19,6 +19,11 @@ export function BudgetDetails({
 
   function handleEditBudget() {
     navigation.navigate("budget");
+  }
+
+  function handleDuplicateBudget() {
+    onDuplicateBudget(selectedBudget!);
+    navigation.goBack();
   }
 
   if (!selectedBudget) return;
@@ -66,7 +71,11 @@ export function BudgetDetails({
             icon="delete-outline"
             onPress={handleDeleteBudget}
           />
-          <Button variant="secondary" icon="content-copy" />
+          <Button
+            variant="secondary"
+            icon="content-copy"
+            onPress={handleDuplicateBudget}
+          />
           <Button variant="secondary" icon="edit" onPress={handleEditBudget} />
         </View>
 
