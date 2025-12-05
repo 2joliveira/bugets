@@ -8,8 +8,6 @@ import { Button, InputText } from "@/components";
 import { BudgetCard, FilterModal } from "./components";
 import { useBudgets } from "@/context/BudgetContext";
 
-export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
-
 export function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
 

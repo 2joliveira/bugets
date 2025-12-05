@@ -1,65 +1,48 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { colors, fontFamily } from "@/theme";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { colors } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  ORDER_OPTIONS,
-  OrderOptionValue,
-} from "@/app/Home/components/FilterModal";
+import { OrderOptionValue } from "@/app/Home/components/FilterModal";
 
 interface InputCheckBoxProps {
-  options: typeof ORDER_OPTIONS;
-  selectedOption: OrderOptionValue | null;
-  setOption: (option: OrderOptionValue) => void;
+  option: string;
+  selectedOption: string | null;
+  setOption: (option: string) => void;
+  children: React.ReactNode;
 }
 
 export function InputRadio({
-  options,
+  option,
   selectedOption,
   setOption,
+  children,
 }: InputCheckBoxProps) {
   return (
-    <View style={styles.container}>
-      {Object.entries(options).map(([key, value]) => (
-        <TouchableOpacity
-          key={key}
-          style={styles.option}
-          onPress={() => setOption(value)}
-        >
-          <View
-            style={[
-              styles.radio,
-              selectedOption === value
-                ? {
-                    backgroundColor: colors.purple.base,
-                    borderWidth: 0,
-                  }
-                : {
-                    backgroundColor: colors.white,
-                    borderWidth: 1,
-                  },
-            ]}
-          >
-            {selectedOption === value && (
-              <MaterialIcons name="circle" color={colors.white} size={10} />
-            )}
-          </View>
-          <Text style={styles.text}>{value}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+    <TouchableOpacity style={styles.option} onPress={() => setOption(option)}>
+      <View
+        style={[
+          styles.radio,
+          selectedOption === option
+            ? {
+                backgroundColor: colors.purple.base,
+                borderWidth: 0,
+              }
+            : {
+                backgroundColor: colors.white,
+                borderWidth: 1,
+              },
+        ]}
+      >
+        {selectedOption === option && (
+          <MaterialIcons name="circle" color={colors.white} size={10} />
+        )}
+      </View>
+
+      {children}
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    gap: 12,
-  },
-  option: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    gap: 15,
-  },
   radio: {
     width: 20,
     height: 20,
@@ -68,8 +51,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  text: {
-    ...fontFamily.textMd,
-    color: colors.gray[600],
-  }
+  option: {
+    width: "50%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 15,
+  },
 });

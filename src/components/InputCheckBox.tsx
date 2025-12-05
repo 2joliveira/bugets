@@ -1,69 +1,51 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { StatusTag } from "./StatusTag";
-import { colors } from "@/theme";
-import { STATUS_OPTIONS } from "@/app";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import { STATUS_OPTIONS } from "@/context/BudgetContext";
+import { colors } from "@/theme";
 
 interface InputCheckBoxProps {
-  options: readonly (typeof STATUS_OPTIONS)[number][];
-  selectedOption: (typeof STATUS_OPTIONS)[number] | null;
-  setOption: (option: (typeof STATUS_OPTIONS)[number]) => void;
+  option: string;
+  selectedOption: string | null;
+  setOption: (option: string) => void;
+  children: React.ReactNode;
 }
 
 export function InputCheckBox({
-  options,
+  option,
   selectedOption,
   setOption,
+  children,
 }: InputCheckBoxProps) {
-  const { name } = useRoute();
   return (
-    <View
-      style={[
-        styles.container,
-        name === "budget" && {
-          height: 80,
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "space-around",
-        },
-      ]}
+    <TouchableOpacity
+      style={styles.option}
+      onPress={() => setOption(option)}
     >
-      {options.map((option) => (
-        <TouchableOpacity
-          key={option}
-          style={styles.option}
-          onPress={() => setOption(option)}
-        >
-          <View
-            style={[
-              styles.checkbox,
-              selectedOption === option
-                ? {
-                    backgroundColor: colors.purple.base,
-                    borderWidth: 0,
-                  }
-                : {
-                    backgroundColor: colors.white,
-                    borderWidth: 1,
-                  },
-            ]}
-          >
-            {selectedOption === option && (
-              <MaterialIcons name="check" color={colors.white} size={16} />
-            )}
-          </View>
-          <StatusTag status={option} />
-        </TouchableOpacity>
-      ))}
-    </View>
+      <View
+        style={[
+          styles.checkbox,
+          selectedOption === option
+            ? {
+                backgroundColor: colors.purple.base,
+                borderWidth: 0,
+              }
+            : {
+                backgroundColor: colors.white,
+                borderWidth: 1,
+              },
+        ]}
+      >
+        {selectedOption === option && (
+          <MaterialIcons name="check" color={colors.white} size={16} />
+        )}
+      </View>
+
+      {children}
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    gap: 12,
-  },
   option: {
     width: "60%",
     flexDirection: "row",
