@@ -2,7 +2,6 @@ import { useState } from "react";
 import { StyleSheet, View, ScrollView, Image, Text } from "react-native";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import uuid from "react-native-uuid";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -16,31 +15,7 @@ import {
   ServiceInfos,
   ServiceModal,
 } from "./components";
-
-export const serviceSchema = z.object({
-  id: z.uuidv4(),
-  title: z.string().min(2, "Título do serviço é obrigatório."),
-  description: z.string().min(2, "Adicione uma descrição."),
-  quantity: z.number().min(1, "informe a quantidade."),
-  price: z.number().min(1, "Informe o valor do serviço"),
-});
-
-const budgetSchema = z.object({
-  id: z.uuidv4(),
-  client: z.string().min(1, "Nome do cliente é obrigatório."),
-  title: z.string().min(1, "Título do orçamento é obrigatório."),
-  services: z.array(serviceSchema).min(1, "Adicione ao menos um serviço"),
-  status: z.enum(STATUS_OPTIONS, { error: "Status é obrigatório." }),
-  percentageDiscount: z.number().optional(),
-  descountValue: z.number().optional(),
-  budgetPrice: z.number(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
-
-export type ServiceType = z.infer<typeof serviceSchema>;
-
-export type BudgetType = z.infer<typeof budgetSchema>;
+import { budgetSchema, BudgetType } from "@/domain/budget.schema";
 
 export function Budget() {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -196,10 +171,9 @@ export function Budget() {
               {fields.map((service, index) => (
                 <ServiceInfos
                   key={service.id}
-                  onUpdateServices={update}
-                  onRemoveServices={remove}
                   index={index}
                   service={service}
+                  setIsOpenModal={setIsOpenModal}
                 />
               ))}
             </View>
@@ -253,6 +227,8 @@ export function Budget() {
           visible={isOpenModal}
           onClose={() => setIsOpenModal(false)}
           onAddService={append}
+          onUpdateServices={update}
+          onRemoveServices={remove}
         />
       )}
     </View>

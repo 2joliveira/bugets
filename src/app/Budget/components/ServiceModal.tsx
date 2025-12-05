@@ -11,7 +11,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Button, Error, InputText, ModalComponent } from "@/components";
 import { colors, fontFamily } from "@/theme";
-import { BudgetType, serviceSchema, ServiceType } from "..";
+import { useBudgets } from "@/context/BudgetContext";
+import { BudgetType } from "@/domain/budget.schema";
+import { serviceSchema, ServiceType } from "@/domain/service.schema";
 
 interface FilterModalProps {
   visible: boolean;
@@ -29,9 +31,9 @@ export function ServiceModal({
   onAddService,
   onUpdateServices,
   onRemoveServices,
-  service,
-  serviceIndex,
 }: FilterModalProps) {
+  const { selectedService } = useBudgets();
+
   const {
     control,
     handleSubmit,
@@ -39,7 +41,7 @@ export function ServiceModal({
     formState: { errors },
   } = useForm<ServiceType>({
     resolver: zodResolver(serviceSchema),
-    defaultValues: service ?? {
+    defaultValues: selectedService ?? {
       id: uuid.v4(),
       title: "",
       description: "",
@@ -60,15 +62,15 @@ export function ServiceModal({
   }
 
   function handleUpdateService(data: ServiceType) {
-    if (onUpdateServices && typeof serviceIndex === "number")
-      onUpdateServices(serviceIndex, data);
+    if (onUpdateServices && typeof selectedService?.index === "number")
+      onUpdateServices(selectedService?.index, data);
 
     onClose();
   }
 
   function handleRemoveService() {
-    if (onRemoveServices && typeof serviceIndex === "number")
-      onRemoveServices(serviceIndex);
+    if (onRemoveServices && typeof selectedService?.index === "number")
+      onRemoveServices(selectedService?.index);
 
     onClose();
   }
@@ -176,7 +178,7 @@ export function ServiceModal({
         </View>
 
         <View style={styles.footer}>
-          {service ? (
+          {selectedService ? (
             <Button
               variant="destructive"
               icon="delete-outline"
@@ -193,9 +195,9 @@ export function ServiceModal({
           <Button
             variant="primary"
             icon="check"
-            text={service ? "Editar" : "Salvar"}
+            text={selectedService ? "Editar" : "Salvar"}
             onPress={
-              service
+              selectedService
                 ? handleSubmit(handleUpdateService)
                 : handleSubmit(handleAddService)
             }

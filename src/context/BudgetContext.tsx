@@ -6,7 +6,6 @@ import {
   useCallback,
 } from "react";
 import uuid from "react-native-uuid";
-import { BudgetType } from "@/app";
 import {
   getBudgets,
   getBudget,
@@ -14,6 +13,12 @@ import {
   removeBudget,
   updateBudget,
 } from "@/storage/budgetsStorage";
+import { ServiceType } from "@/domain/service.schema";
+import { BudgetType } from "@/domain/budget.schema";
+
+interface ServiceEditOn extends ServiceType {
+  index: number;
+}
 
 interface BudgetContextData {
   budgets: BudgetType[];
@@ -24,6 +29,8 @@ interface BudgetContextData {
   getBudgetById: (id: string) => Promise<BudgetType | undefined>;
   selectedBudget: BudgetType | null;
   onSelectBudget: (id?: string) => Promise<void>;
+  selectedService: ServiceEditOn | null;
+  onSelectService: (service?: ServiceEditOn) => void;
   onUpdateBudget: (budget: BudgetType) => void;
   onDuplicateBudget: (budget: BudgetType) => void;
 }
@@ -33,7 +40,6 @@ export const BudgetContext = createContext<BudgetContextData>(
 );
 
 export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
-
 
 export const ORDER_OPTIONS = {
   most_recent: "Mais recente",
@@ -45,6 +51,9 @@ export const ORDER_OPTIONS = {
 export function BudgetProvider({ children }: { children: React.ReactNode }) {
   const [budgets, setBudgets] = useState<BudgetType[]>([]);
   const [selectedBudget, setSelectedBudget] = useState<BudgetType | null>(null);
+  const [selectedService, setSelectedService] = useState<ServiceEditOn | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
 
   async function loadBudgets() {
@@ -104,6 +113,12 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
     if (budget) setSelectedBudget(budget);
   }, []);
 
+  const onSelectService = useCallback(async (service?: ServiceEditOn) => {
+    if (!service) return setSelectedService(null);
+
+    return setSelectedService(service);
+  }, []);
+
   useEffect(() => {
     loadBudgets();
   }, []);
@@ -131,6 +146,8 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
         onSelectBudget,
         onUpdateBudget,
         onDuplicateBudget,
+        selectedService,
+        onSelectService,
       }}
     >
       {children}

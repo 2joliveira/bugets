@@ -1,27 +1,28 @@
-import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { UseFieldArrayRemove, UseFieldArrayUpdate } from "react-hook-form";
 import { AntDesign } from "@expo/vector-icons";
 import { formatPrice } from "@/utils/formatPrice";
 import { colors, fontFamily } from "@/theme";
-import { ServiceModal } from "./ServiceModal";
-import { BudgetType, ServiceType } from "..";
+import { useBudgets } from "@/context/BudgetContext";
+import { ServiceType } from "@/domain/service.schema";
 
 interface ServiceInfosProps {
   service: ServiceType;
   index: number;
-  onUpdateServices: UseFieldArrayUpdate<BudgetType, "services">;
-  onRemoveServices: UseFieldArrayRemove;
+  setIsOpenModal: (state: boolean) => void;
 }
 
 export function ServiceInfos({
   service,
   index,
-  onRemoveServices,
-  onUpdateServices,
+  setIsOpenModal,
 }: ServiceInfosProps) {
   const { title, description, price, quantity } = service;
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  const { onSelectService } = useBudgets();
+
+  function handleEditService() {
+    onSelectService({ ...service, index });
+    setIsOpenModal(true);
+  }
 
   return (
     <View style={styles.container}>
@@ -41,20 +42,9 @@ export function ServiceInfos({
         <Text style={styles.quantity}>{`Qt: ${quantity}`}</Text>
       </View>
 
-      <TouchableOpacity onPress={() => setIsOpenModal(true)}>
+      <TouchableOpacity onPress={handleEditService}>
         <AntDesign name="edit" color={colors.purple.base} size={20} />
       </TouchableOpacity>
-
-      {isOpenModal && (
-        <ServiceModal
-          visible={isOpenModal}
-          onClose={() => setIsOpenModal(false)}
-          service={service}
-          serviceIndex={index}
-          onUpdateServices={onUpdateServices}
-          onRemoveServices={onRemoveServices}
-        />
-      )}
     </View>
   );
 }
