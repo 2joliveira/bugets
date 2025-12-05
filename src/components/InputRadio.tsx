@@ -1,51 +1,45 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { colors, fontFamily } from "@/theme";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { colors } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  OrderOptionValue,
-} from "@/app/Home/components/FilterModal";
-import { ORDER_OPTIONS } from "@/context/BudgetContext";
+import { OrderOptionValue } from "@/app/Home/components/FilterModal";
 
 interface InputCheckBoxProps {
-  options: typeof ORDER_OPTIONS;
+  option: string;
   selectedOption: OrderOptionValue | null;
   setOption: (option: OrderOptionValue) => void;
+  children: React.ReactNode;
 }
 
 export function InputRadio({
-  options,
+  option,
   selectedOption,
   setOption,
+  children,
 }: InputCheckBoxProps) {
   return (
     <View style={styles.container}>
-      {Object.entries(options).map(([key, value]) => (
-        <TouchableOpacity
-          key={key}
-          style={styles.option}
-          onPress={() => setOption(value)}
+      <TouchableOpacity style={styles.option} onPress={() => setOption(option)}>
+        <View
+          style={[
+            styles.radio,
+            selectedOption === option
+              ? {
+                  backgroundColor: colors.purple.base,
+                  borderWidth: 0,
+                }
+              : {
+                  backgroundColor: colors.white,
+                  borderWidth: 1,
+                },
+          ]}
         >
-          <View
-            style={[
-              styles.radio,
-              selectedOption === value
-                ? {
-                    backgroundColor: colors.purple.base,
-                    borderWidth: 0,
-                  }
-                : {
-                    backgroundColor: colors.white,
-                    borderWidth: 1,
-                  },
-            ]}
-          >
-            {selectedOption === value && (
-              <MaterialIcons name="circle" color={colors.white} size={10} />
-            )}
-          </View>
-          <Text style={styles.text}>{value}</Text>
-        </TouchableOpacity>
-      ))}
+          {selectedOption === option && (
+            <MaterialIcons name="circle" color={colors.white} size={10} />
+          )}
+        </View>
+
+        {children}
+      </TouchableOpacity>
     </View>
   );
 }
@@ -68,8 +62,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  text: {
-    ...fontFamily.textMd,
-    color: colors.gray[600],
-  }
 });

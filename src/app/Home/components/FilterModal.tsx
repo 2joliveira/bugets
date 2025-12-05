@@ -1,11 +1,10 @@
 import { Button, InputCheckBox, InputRadio, StatusTag } from "@/components";
 import { colors, fontFamily } from "@/theme";
 import React, { useState } from "react";
-import { View, Dimensions, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { ModalComponent } from "@/components/Modal";
 import { ORDER_OPTIONS, STATUS_OPTIONS } from "@/context/BudgetContext";
 
-const { height } = Dimensions.get("window");
 
 interface FilterModalProps {
   visible: boolean;
@@ -30,7 +29,7 @@ export function FilterModal({ visible, onClose }: FilterModalProps) {
       visible={visible}
       onClose={onClose}
       title="Filtrar e ordenar"
-      proportionalHeight={0.65}
+      proportionalHeight={0.62}
     >
       <View style={styles.content}>
         <Text style={styles.section}>Status</Text>
@@ -48,11 +47,19 @@ export function FilterModal({ visible, onClose }: FilterModalProps) {
         </View>
 
         <Text style={styles.section}>Ordenação</Text>
-        <InputRadio
-          options={ORDER_OPTIONS}
-          selectedOption={selectedOrder}
-          setOption={setSelectedOrder}
-        />
+
+        <View style={{ gap: 10 }}>
+          {Object.entries(ORDER_OPTIONS).map(([key, value]) => (
+            <InputRadio
+              key={key}
+              selectedOption={selectedOrder}
+              setOption={setSelectedOrder}
+              option={key}
+            >
+              <Text style={styles.textOption}>{value}</Text>
+            </InputRadio>
+          ))}
+        </View>
       </View>
 
       <View style={styles.footer}>
@@ -76,7 +83,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   footer: {
-    marginTop: 50,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -84,5 +90,9 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopWidth: 1,
     borderColor: colors.gray[200],
+  },
+  textOption: {
+    ...fontFamily.textMd,
+    color: colors.gray[600],
   },
 });
