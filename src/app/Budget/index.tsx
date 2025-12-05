@@ -154,6 +154,7 @@ export function Budget() {
                   >
                     {STATUS_OPTIONS.map((option) => (
                       <InputCheckBox
+                        key={option}
                         option={option}
                         selectedOption={value}
                         setOption={onChange}

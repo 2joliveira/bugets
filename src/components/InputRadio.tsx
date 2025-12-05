@@ -2,9 +2,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors, fontFamily } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
-  ORDER_OPTIONS,
   OrderOptionValue,
 } from "@/app/Home/components/FilterModal";
+import { ORDER_OPTIONS } from "@/context/BudgetContext";
 
 interface InputCheckBoxProps {
   options: typeof ORDER_OPTIONS;

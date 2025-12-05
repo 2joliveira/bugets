@@ -37,6 +37,7 @@ export function FilterModal({ visible, onClose }: FilterModalProps) {
         <View style={{ gap: 10 }}>
           {STATUS_OPTIONS.map((option) => (
             <InputCheckBox
+              key={option}
               option={option}
               selectedOption={selectedStatus}
               setOption={setSelectedStatus}

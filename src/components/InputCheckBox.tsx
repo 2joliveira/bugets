@@ -1,8 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { colors } from "@/theme";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
 import { STATUS_OPTIONS } from "@/context/BudgetContext";
+import { colors } from "@/theme";
 
 interface InputCheckBoxProps {
   option: (typeof STATUS_OPTIONS)[number];
@@ -17,10 +16,8 @@ export function InputCheckBox({
   setOption,
   children,
 }: InputCheckBoxProps) {
-  const { name } = useRoute();
   return (
     <TouchableOpacity
-      key={option}
       style={styles.option}
       onPress={() => setOption(option)}
     >
