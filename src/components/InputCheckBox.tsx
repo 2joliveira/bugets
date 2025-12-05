@@ -4,9 +4,9 @@ import { STATUS_OPTIONS } from "@/context/BudgetContext";
 import { colors } from "@/theme";
 
 interface InputCheckBoxProps {
-  option: (typeof STATUS_OPTIONS)[number];
-  selectedOption: (typeof STATUS_OPTIONS)[number] | null;
-  setOption: (option: (typeof STATUS_OPTIONS)[number]) => void;
+  option: string;
+  selectedOption: string | null;
+  setOption: (option: string) => void;
   children: React.ReactNode;
 }
 

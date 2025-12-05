@@ -9,7 +9,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackRoutesList } from "@/routes/StackRoutes";
 import { STATUS_OPTIONS, useBudgets } from "@/context/BudgetContext";
 import { colors, fontFamily } from "@/theme";
-import { Button, InputCheckBox, InputText, StatusTag } from "@/components";
+import { Button, InputRadio, InputText, StatusTag } from "@/components";
 import {
   InfosCard,
   Investments,
@@ -153,14 +153,14 @@ export function Budget() {
                     ]}
                   >
                     {STATUS_OPTIONS.map((option) => (
-                      <InputCheckBox
+                      <InputRadio
                         key={option}
                         option={option}
                         selectedOption={value}
                         setOption={onChange}
                       >
                         <StatusTag status={option} />
-                      </InputCheckBox>
+                      </InputRadio>
                     ))}
                   </View>
                 )}

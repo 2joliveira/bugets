@@ -5,7 +5,6 @@ import { View, StyleSheet, Text } from "react-native";
 import { ModalComponent } from "@/components/Modal";
 import { ORDER_OPTIONS, STATUS_OPTIONS } from "@/context/BudgetContext";
 
-
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
@@ -16,9 +15,7 @@ export type OrderOptionKeys = keyof typeof ORDER_OPTIONS;
 export type OrderOptionValue = (typeof ORDER_OPTIONS)[OrderOptionKeys];
 
 export function FilterModal({ visible, onClose }: FilterModalProps) {
-  const [selectedStatus, setSelectedStatus] = useState<
-    (typeof STATUS_OPTIONS)[number] | null
-  >(null);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
   const [selectedOrder, setSelectedOrder] = useState<OrderOptionValue | null>(
     null
