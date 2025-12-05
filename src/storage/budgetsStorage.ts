@@ -1,5 +1,5 @@
-import { BudgetType } from "@/app";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BudgetType } from "@/domain/budget.schema";
 
 const BUDGET_STORAGE_KEY = "@budgets";
 

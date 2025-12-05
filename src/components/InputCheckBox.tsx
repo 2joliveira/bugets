@@ -1,30 +1,26 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { STATUS_OPTIONS } from "@/context/BudgetContext";
 import { colors } from "@/theme";
 
-interface InputCheckBoxProps {
-  option: string;
-  selectedOption: string | null;
-  setOption: (option: string) => void;
+interface InputCheckBoxProps<T extends string> {
+  option: T;
+  selectedOption: T[] | null;
+  setOption: (option: T) => void;
   children: React.ReactNode;
 }
 
-export function InputCheckBox({
+export function InputCheckBox<T extends string>({
   option,
   selectedOption,
   setOption,
   children,
-}: InputCheckBoxProps) {
+}: InputCheckBoxProps<T>) {
   return (
-    <TouchableOpacity
-      style={styles.option}
-      onPress={() => setOption(option)}
-    >
+    <TouchableOpacity style={styles.option} onPress={() => setOption(option)}>
       <View
         style={[
           styles.checkbox,
-          selectedOption === option
+          selectedOption?.includes(option)
             ? {
                 backgroundColor: colors.purple.base,
                 borderWidth: 0,
@@ -35,7 +31,7 @@ export function InputCheckBox({
               },
         ]}
       >
-        {selectedOption === option && (
+        {selectedOption?.includes(option) && (
           <MaterialIcons name="check" color={colors.white} size={16} />
         )}
       </View>

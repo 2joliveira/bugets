@@ -1,25 +1,46 @@
-import { Button, InputCheckBox, InputRadio, StatusTag } from "@/components";
-import { colors, fontFamily } from "@/theme";
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { ModalComponent } from "@/components/Modal";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ORDER_OPTIONS, STATUS_OPTIONS } from "@/context/BudgetContext";
+import { colors, fontFamily } from "@/theme";
+import {
+  Button,
+  InputCheckBox,
+  InputRadio,
+  ModalComponent,
+  StatusTag,
+} from "@/components";
 
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
 }
 
-export type OrderOptionKeys = keyof typeof ORDER_OPTIONS;
+const ORDER_KEYS = Object.keys(ORDER_OPTIONS) as Array<
+  keyof typeof ORDER_OPTIONS
+>;
 
-export type OrderOptionValue = (typeof ORDER_OPTIONS)[OrderOptionKeys];
+const filtersSchema = z.object({
+  status: z.array(z.enum(STATUS_OPTIONS)).optional(),
+  order: z.enum(ORDER_KEYS).optional(),
+});
+
+type FiltersType = z.infer<typeof filtersSchema>;
 
 export function FilterModal({ visible, onClose }: FilterModalProps) {
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const { control, handleSubmit } = useForm<FiltersType>({
+    resolver: zodResolver(filtersSchema),
+    defaultValues: {
+      order: undefined,
+      status: undefined,
+    },
+  });
 
-  const [selectedOrder, setSelectedOrder] = useState<OrderOptionValue | null>(
-    null
-  );
+  function onHandleSubmit(data: FiltersType) {
+    console.log(data);
+  }
 
   return (
     <ModalComponent
@@ -31,38 +52,67 @@ export function FilterModal({ visible, onClose }: FilterModalProps) {
       <View style={styles.content}>
         <Text style={styles.section}>Status</Text>
         <View style={{ gap: 10 }}>
-          {STATUS_OPTIONS.map((option) => (
-            <InputCheckBox
-              key={option}
-              option={option}
-              selectedOption={selectedStatus}
-              setOption={setSelectedStatus}
-            >
-              <StatusTag status={option} />
-            </InputCheckBox>
-          ))}
+          <Controller
+            control={control}
+            name="status"
+            render={({ field: { value = [], onChange } }) => (
+              <>
+                {STATUS_OPTIONS.map((option) => (
+                  <InputCheckBox<(typeof STATUS_OPTIONS)[number]>
+                    key={option}
+                    option={option}
+                    selectedOption={value}
+                    setOption={(clicked) => {
+                      console.log({ clicked });
+                      if (value.includes(clicked)) {
+                        onChange(value.filter((item) => item !== clicked));
+                      } else {
+                        // adicionar
+                        onChange([...value, clicked]);
+                      }
+                    }}
+                  >
+                    <StatusTag status={option} />
+                  </InputCheckBox>
+                ))}
+              </>
+            )}
+          />
         </View>
 
         <Text style={styles.section}>Ordenação</Text>
 
         <View style={{ gap: 10 }}>
-          {Object.entries(ORDER_OPTIONS).map(([key, value]) => (
-            <InputRadio
-              key={key}
-              selectedOption={selectedOrder}
-              setOption={setSelectedOrder}
-              option={key}
-            >
-              <Text style={styles.textOption}>{value}</Text>
-            </InputRadio>
-          ))}
+          <Controller
+            control={control}
+            name="order"
+            render={({ field: { value, onChange } }) => (
+              <>
+                {Object.entries(ORDER_OPTIONS).map(([key, option]) => (
+                  <InputRadio
+                    key={key}
+                    selectedOption={value}
+                    setOption={onChange}
+                    option={key}
+                  >
+                    <Text style={styles.textOption}>{option}</Text>
+                  </InputRadio>
+                ))}
+              </>
+            )}
+          />
         </View>
       </View>
 
       <View style={styles.footer}>
         <Button variant="secondary" text="Resetar filtros" />
 
-        <Button variant="primary" icon="check" text="Aplicar" />
+        <Button
+          variant="primary"
+          icon="check"
+          text="Aplicar"
+          onPress={handleSubmit(onHandleSubmit)}
+        />
       </View>
     </ModalComponent>
   );
