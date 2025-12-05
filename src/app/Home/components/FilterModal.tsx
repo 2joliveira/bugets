@@ -1,9 +1,9 @@
-import { Button, InputCheckBox, InputRadio } from "@/components";
+import { Button, InputCheckBox, InputRadio, StatusTag } from "@/components";
 import { colors, fontFamily } from "@/theme";
 import React, { useState } from "react";
 import { View, Dimensions, StyleSheet, Text } from "react-native";
-import { STATUS_OPTIONS } from "..";
 import { ModalComponent } from "@/components/Modal";
+import { ORDER_OPTIONS, STATUS_OPTIONS } from "@/context/BudgetContext";
 
 const { height } = Dimensions.get("window");
 
@@ -11,13 +11,6 @@ interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
 }
-
-export const ORDER_OPTIONS = {
-  most_recent: "Mais recente",
-  oldest: "Mais antigo",
-  higher_value: "Maior valor",
-  lowest_value: "Menor valor",
-};
 
 export type OrderOptionKeys = keyof typeof ORDER_OPTIONS;
 
@@ -41,11 +34,17 @@ export function FilterModal({ visible, onClose }: FilterModalProps) {
     >
       <View style={styles.content}>
         <Text style={styles.section}>Status</Text>
-        <InputCheckBox
-          options={STATUS_OPTIONS}
-          selectedOption={selectedStatus}
-          setOption={setSelectedStatus}
-        />
+        <View style={{ gap: 10 }}>
+          {STATUS_OPTIONS.map((option) => (
+            <InputCheckBox
+              option={option}
+              selectedOption={selectedStatus}
+              setOption={setSelectedStatus}
+            >
+              <StatusTag status={option} />
+            </InputCheckBox>
+          ))}
+        </View>
 
         <Text style={styles.section}>Ordenação</Text>
         <InputRadio

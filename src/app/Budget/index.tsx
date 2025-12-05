@@ -5,12 +5,11 @@ import uuid from "react-native-uuid";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackRoutesList } from "@/routes/StackRoutes";
-import { useBudgets } from "@/context/BudgetContext";
+import { STATUS_OPTIONS, useBudgets } from "@/context/BudgetContext";
 import { colors, fontFamily } from "@/theme";
-import { Button, InputCheckBox, InputText } from "@/components";
-import { STATUS_OPTIONS } from "../Home";
+import { Button, InputCheckBox, InputText, StatusTag } from "@/components";
 import {
   InfosCard,
   Investments,
@@ -46,6 +45,7 @@ export type BudgetType = z.infer<typeof budgetSchema>;
 export function Budget() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { onAddBudget, onUpdateBudget, selectedBudget } = useBudgets();
+  const { name } = useRoute();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "budget">>();
@@ -141,11 +141,27 @@ export function Budget() {
                 control={control}
                 name="status"
                 render={({ field: { value, onChange } }) => (
-                  <InputCheckBox
-                    options={STATUS_OPTIONS}
-                    selectedOption={value}
-                    setOption={onChange}
-                  />
+                  <View
+                    style={[
+                      name === "budget" && {
+                        height: 80,
+                        gap: 10,
+                        flexWrap: "wrap",
+                        alignItems: "center",
+                        justifyContent: "space-around",
+                      },
+                    ]}
+                  >
+                    {STATUS_OPTIONS.map((option) => (
+                      <InputCheckBox
+                        option={option}
+                        selectedOption={value}
+                        setOption={onChange}
+                      >
+                        <StatusTag status={option} />
+                      </InputCheckBox>
+                    ))}
+                  </View>
                 )}
               />
             </View>
