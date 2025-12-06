@@ -1,5 +1,3 @@
-import { colors, fontFamily } from "@/theme";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
 import {
   Animated,
@@ -12,6 +10,8 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
+import { colors, fontFamily } from "@/theme";
 
 interface ModalProps {
   visible: boolean;

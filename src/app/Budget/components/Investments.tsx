@@ -3,7 +3,8 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Controller, ControllerProps, UseFormSetValue } from "react-hook-form";
 import { colors, fontFamily } from "@/theme";
 import { formatPrice } from "@/utils/formatPrice";
-import { BudgetType, ServiceType } from "..";
+import { BudgetType } from "@/domain/budget.schema";
+import { ServiceType } from "@/domain/service.schema";
 
 interface InvestimentsProps {
   control: ControllerProps<BudgetType>["control"];

@@ -1,11 +1,11 @@
-import { colors, fontFamily } from "@/theme";
-import { MaterialIcons } from "@expo/vector-icons";
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { colors, fontFamily } from "@/theme";
 
 type ButtonProps = TouchableOpacityProps & {
   icon?: keyof typeof MaterialIcons.glyphMap;

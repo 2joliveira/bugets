@@ -3,7 +3,6 @@ import { View, StyleSheet, Text } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ORDER_OPTIONS, STATUS_OPTIONS } from "@/context/BudgetContext";
 import { colors, fontFamily } from "@/theme";
 import {
   Button,
@@ -12,15 +11,12 @@ import {
   ModalComponent,
   StatusTag,
 } from "@/components";
+import { ORDER_KEYS, ORDER_OPTIONS, STATUS_OPTIONS } from "@/types";
 
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
 }
-
-const ORDER_KEYS = Object.keys(ORDER_OPTIONS) as Array<
-  keyof typeof ORDER_OPTIONS
->;
 
 const filtersSchema = z.object({
   status: z.array(z.enum(STATUS_OPTIONS)).optional(),

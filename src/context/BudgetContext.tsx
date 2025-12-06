@@ -39,15 +39,6 @@ export const BudgetContext = createContext<BudgetContextData>(
   {} as BudgetContextData
 );
 
-export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
-
-export const ORDER_OPTIONS = {
-  most_recent: "Mais recente",
-  oldest: "Mais antigo",
-  higher_value: "Maior valor",
-  lowest_value: "Menor valor",
-};
-
 export function BudgetProvider({ children }: { children: React.ReactNode }) {
   const [budgets, setBudgets] = useState<BudgetType[]>([]);
   const [selectedBudget, setSelectedBudget] = useState<BudgetType | null>(null);

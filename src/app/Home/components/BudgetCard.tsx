@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import { colors, fontFamily } from "@/theme";
 import { StatusTag } from "@/components/StatusTag";
-import { BudgetType } from "@/app/Budget";
 import { formatPrice } from "@/utils/formatPrice";
+import { BudgetType } from "@/domain/budget.schema";
 
 export function BudgetCard({
   client,

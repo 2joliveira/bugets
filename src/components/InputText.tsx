@@ -1,12 +1,6 @@
-import { colors, fontFamily } from "@/theme";
+import { colors } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TextInputProps,
-  View,
-} from "react-native";
+import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
 import { Error } from "./Error";
 
 type InputTextProps = TextInputProps & {
@@ -41,9 +35,7 @@ export function InputText({
           {...props}
         />
 
-        {error && (
-         <Error error={error} />
-        )}
+        {error && <Error error={error} />}
       </View>
     </>
   );
@@ -62,5 +54,4 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     gap: 8,
   },
-  
 });

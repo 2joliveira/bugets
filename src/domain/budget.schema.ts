@@ -1,6 +1,6 @@
 import z from "zod";
-import { STATUS_OPTIONS } from "@/context/BudgetContext";
 import { serviceSchema } from "./service.schema";
+import { STATUS_OPTIONS } from "@/types";
 
 export const budgetSchema = z.object({
   id: z.uuidv4(),

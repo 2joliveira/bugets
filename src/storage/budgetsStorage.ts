@@ -1,17 +1,41 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BudgetType } from "@/domain/budget.schema";
+import { ORDER_OPTIONS, OrdersType, StatusType } from "@/types";
 
 const BUDGET_STORAGE_KEY = "@budgets";
 
-export async function getBudgets(): Promise<BudgetType[]> {
+const ORDER_KEYS = Object.keys(ORDER_OPTIONS) as Array<
+  keyof typeof ORDER_OPTIONS
+>;
+
+type BudgetStorageType = {
+  budgets: BudgetType[];
+  filters: {
+    search: string;
+    order: OrdersType | undefined;
+    status: StatusType[] | undefined;
+  };
+};
+
+async function getStorage(): Promise<BudgetStorageType | undefined> {
   try {
     const storage = await AsyncStorage.getItem(BUDGET_STORAGE_KEY);
 
-    if (!storage) return [];
+    const parsedStorage = storage ? JSON.parse(storage) : undefined;
 
-    const parsedBudgets = JSON.parse(storage);
+    return parsedStorage as BudgetStorageType;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-    return Array.isArray(parsedBudgets) ? parsedBudgets : [];
+export async function getBudgets(): Promise<BudgetType[]> {
+  try {
+    const storage = await getStorage();
+
+    if (!storage?.budgets) return [];
+
+    return storage.budgets;
   } catch (error) {
     console.error(error);
     return [];
@@ -22,7 +46,7 @@ export async function getBudget(id: string): Promise<BudgetType | undefined> {
   try {
     const budgets = await getBudgets();
 
-    const budget = budgets.find((budget) => budget.id === id);
+    const budget = budgets?.find((budget: any) => budget.id === id);
 
     if (!budget) return undefined;
 
@@ -34,13 +58,16 @@ export async function getBudget(id: string): Promise<BudgetType | undefined> {
 
 export async function createBudget(budget: BudgetType): Promise<void> {
   try {
-    const currentBudgets = await getBudgets();
+    const storage = await getStorage();
 
-    const updatedBudgets = [...currentBudgets, budget];
+    const updatedBudgets = [...(storage?.budgets ?? []), budget];
 
     await AsyncStorage.setItem(
       BUDGET_STORAGE_KEY,
-      JSON.stringify(updatedBudgets)
+      JSON.stringify({
+        ...storage,
+        budgets: updatedBudgets,
+      })
     );
   } catch (error) {
     console.error(error);
@@ -49,12 +76,16 @@ export async function createBudget(budget: BudgetType): Promise<void> {
 
 export async function removeBudget(id: string): Promise<void> {
   try {
-    const currentBudgets = await getBudgets();
-    const updatedBudgets = currentBudgets.filter((budget) => budget.id !== id);
-
+    const storage = await getStorage();
+    const updatedBudgets = storage?.budgets.filter(
+      (budget) => budget.id !== id
+    );
     await AsyncStorage.setItem(
       BUDGET_STORAGE_KEY,
-      JSON.stringify(updatedBudgets)
+      JSON.stringify({
+        ...storage,
+        budgets: updatedBudgets,
+      })
     );
   } catch (error) {
     console.error(error);
@@ -63,17 +94,17 @@ export async function removeBudget(id: string): Promise<void> {
 
 export async function updateBudget(budget: BudgetType) {
   try {
-    const currentBudgets = await getBudgets();
-
-    if (!currentBudgets) return null;
-
-    const filteredBudgets = currentBudgets.filter(
+    const storage = await getStorage();
+    if (!storage?.budgets) return null;
+    const filteredBudgets = storage.budgets.filter(
       (currentBudget) => currentBudget.id !== budget.id
     );
-
     await AsyncStorage.setItem(
       BUDGET_STORAGE_KEY,
-      JSON.stringify([...filteredBudgets, budget])
+      JSON.stringify({
+        ...storage,
+        budgets: [...filteredBudgets, budget],
+      })
     );
   } catch (error) {
     console.error(error);
