@@ -1,7 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Controller, useForm } from "react-hook-form";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { colors, fontFamily } from "@/theme";
 import {
@@ -11,31 +10,35 @@ import {
   ModalComponent,
   StatusTag,
 } from "@/components";
-import { ORDER_KEYS, ORDER_OPTIONS, STATUS_OPTIONS } from "@/types";
+import { ORDER_OPTIONS, STATUS_OPTIONS } from "@/types";
+import { useBudgets } from "@/context/BudgetContext";
+import { filtersSchema, FiltersType } from "@/domain/filters.schema";
 
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
 }
 
-const filtersSchema = z.object({
-  status: z.array(z.enum(STATUS_OPTIONS)).optional(),
-  order: z.enum(ORDER_KEYS).optional(),
-});
-
-type FiltersType = z.infer<typeof filtersSchema>;
-
 export function FilterModal({ visible, onClose }: FilterModalProps) {
-  const { control, handleSubmit } = useForm<FiltersType>({
+  const { onApplyFilters, selectedFilters, onResetFilters } = useBudgets();
+  const { control, handleSubmit, reset } = useForm<FiltersType>({
     resolver: zodResolver(filtersSchema),
-    defaultValues: {
+    defaultValues: selectedFilters ?? {
+      search: "",
       order: undefined,
       status: undefined,
     },
   });
 
   function onHandleSubmit(data: FiltersType) {
-    console.log(data);
+    onApplyFilters(data);
+    onClose();
+  }
+
+  function onHandleReset() {
+    reset();
+    onResetFilters();
+    onClose();
   }
 
   return (
@@ -59,11 +62,9 @@ export function FilterModal({ visible, onClose }: FilterModalProps) {
                     option={option}
                     selectedOption={value}
                     setOption={(clicked) => {
-                      console.log({ clicked });
                       if (value.includes(clicked)) {
                         onChange(value.filter((item) => item !== clicked));
                       } else {
-                        // adicionar
                         onChange([...value, clicked]);
                       }
                     }}
@@ -101,7 +102,11 @@ export function FilterModal({ visible, onClose }: FilterModalProps) {
       </View>
 
       <View style={styles.footer}>
-        <Button variant="secondary" text="Resetar filtros" />
+        <Button
+          variant="secondary"
+          text="Resetar filtros"
+          onPress={handleSubmit(onHandleReset)}
+        />
 
         <Button
           variant="primary"

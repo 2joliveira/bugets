@@ -12,9 +12,11 @@ import {
   createBudget,
   removeBudget,
   updateBudget,
+  setFilters,
 } from "@/storage/budgetsStorage";
 import { ServiceType } from "@/domain/service.schema";
 import { BudgetType } from "@/domain/budget.schema";
+import { FiltersType } from "@/domain/filters.schema";
 
 interface ServiceEditOn extends ServiceType {
   index: number;
@@ -31,8 +33,11 @@ interface BudgetContextData {
   onSelectBudget: (id?: string) => Promise<void>;
   selectedService: ServiceEditOn | null;
   onSelectService: (service?: ServiceEditOn) => void;
-  onUpdateBudget: (budget: BudgetType) => void;
-  onDuplicateBudget: (budget: BudgetType) => void;
+  onUpdateBudget: (budget: BudgetType) => Promise<void>;
+  onDuplicateBudget: (budget: BudgetType) => Promise<void>;
+  onApplyFilters: (filters: FiltersType) => Promise<void>;
+  selectedFilters: FiltersType | undefined;
+  onResetFilters: () => Promise<void>
 }
 
 export const BudgetContext = createContext<BudgetContextData>(
@@ -45,6 +50,9 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
   const [selectedService, setSelectedService] = useState<ServiceEditOn | null>(
     null
   );
+  const [selectedFilters, setSelectedFilters] = useState<
+    FiltersType | undefined
+  >(undefined);
   const [loading, setLoading] = useState(true);
 
   async function loadBudgets() {
@@ -124,6 +132,30 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
+  const onApplyFilters = useCallback(async (filters: FiltersType) => {
+    setLoading(true);
+
+    await setFilters(filters);
+
+    setSelectedFilters(filters);
+
+    loadBudgets();
+
+    setLoading(false);
+  }, []);
+
+  const onResetFilters = useCallback(async () => {
+    setLoading(true);
+
+    await setFilters(undefined);
+
+    setSelectedFilters(undefined);
+
+    loadBudgets();
+
+    setLoading(false);
+  }, []);
+
   return (
     <BudgetContext.Provider
       value={{
@@ -139,6 +171,9 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
         onDuplicateBudget,
         selectedService,
         onSelectService,
+        onApplyFilters,
+        selectedFilters,
+        onResetFilters,
       }}
     >
       {children}
