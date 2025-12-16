@@ -49,7 +49,8 @@ export function Button({ icon, text, variant, ...props }: ButtonProps) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 48,
+    height: 50,
+    minWidth: 50,
     borderRadius: 50,
     padding: 12,
     flexDirection: "row",

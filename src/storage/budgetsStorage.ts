@@ -31,6 +31,13 @@ export async function getBudgets(): Promise<BudgetType[]> {
       );
     }
 
+    if (storage?.filters?.search !== "") {
+      acc = acc?.filter?.(
+        (budget) =>
+          budget.title.includes(storage.filters.search)
+      );
+    }
+
     switch (storage?.filters?.order) {
       case "higher_value":
         return acc.sort?.((a, b) => b.budgetPrice - a.budgetPrice);
@@ -136,6 +143,16 @@ export async function setFilters(filters: FiltersType | undefined) {
         filters,
       })
     );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getFilters(): Promise<FiltersType | undefined> {
+  try {
+    const storage = await getStorage();
+
+    if (storage?.filters) return storage.filters;
   } catch (error) {
     console.error(error);
   }

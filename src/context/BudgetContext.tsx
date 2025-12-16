@@ -13,6 +13,7 @@ import {
   removeBudget,
   updateBudget,
   setFilters,
+  getFilters,
 } from "@/storage/budgetsStorage";
 import { ServiceType } from "@/domain/service.schema";
 import { BudgetType } from "@/domain/budget.schema";
@@ -37,7 +38,7 @@ interface BudgetContextData {
   onDuplicateBudget: (budget: BudgetType) => Promise<void>;
   onApplyFilters: (filters: FiltersType) => Promise<void>;
   selectedFilters: FiltersType | undefined;
-  onResetFilters: () => Promise<void>
+  onResetFilters: () => Promise<void>;
 }
 
 export const BudgetContext = createContext<BudgetContextData>(
@@ -119,7 +120,13 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    async function loadFilters() {
+      const filters = await getFilters();
+      if (filters) setSelectedFilters(filters);
+    }
+
     loadBudgets();
+    loadFilters();
   }, []);
 
   const onDuplicateBudget = useCallback(async (budget: BudgetType) => {
