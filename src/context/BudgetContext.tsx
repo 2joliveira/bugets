@@ -12,9 +12,12 @@ import {
   createBudget,
   removeBudget,
   updateBudget,
+  setFilters,
+  getFilters,
 } from "@/storage/budgetsStorage";
 import { ServiceType } from "@/domain/service.schema";
 import { BudgetType } from "@/domain/budget.schema";
+import { FiltersType } from "@/domain/filters.schema";
 
 interface ServiceEditOn extends ServiceType {
   index: number;
@@ -31,22 +34,16 @@ interface BudgetContextData {
   onSelectBudget: (id?: string) => Promise<void>;
   selectedService: ServiceEditOn | null;
   onSelectService: (service?: ServiceEditOn) => void;
-  onUpdateBudget: (budget: BudgetType) => void;
-  onDuplicateBudget: (budget: BudgetType) => void;
+  onUpdateBudget: (budget: BudgetType) => Promise<void>;
+  onDuplicateBudget: (budget: BudgetType) => Promise<void>;
+  onApplyFilters: (filters: FiltersType) => Promise<void>;
+  selectedFilters: FiltersType | undefined;
+  onResetFilters: () => Promise<void>;
 }
 
 export const BudgetContext = createContext<BudgetContextData>(
   {} as BudgetContextData
 );
-
-export const STATUS_OPTIONS = ["draft", "sent", "success", "recused"] as const;
-
-export const ORDER_OPTIONS = {
-  most_recent: "Mais recente",
-  oldest: "Mais antigo",
-  higher_value: "Maior valor",
-  lowest_value: "Menor valor",
-};
 
 export function BudgetProvider({ children }: { children: React.ReactNode }) {
   const [budgets, setBudgets] = useState<BudgetType[]>([]);
@@ -54,6 +51,9 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
   const [selectedService, setSelectedService] = useState<ServiceEditOn | null>(
     null
   );
+  const [selectedFilters, setSelectedFilters] = useState<
+    FiltersType | undefined
+  >(undefined);
   const [loading, setLoading] = useState(true);
 
   async function loadBudgets() {
@@ -120,13 +120,43 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    async function loadFilters() {
+      const filters = await getFilters();
+      if (filters) setSelectedFilters(filters);
+    }
+
     loadBudgets();
+    loadFilters();
   }, []);
 
   const onDuplicateBudget = useCallback(async (budget: BudgetType) => {
     setLoading(true);
 
     await createBudget({ ...budget, id: uuid.v4() });
+
+    loadBudgets();
+
+    setLoading(false);
+  }, []);
+
+  const onApplyFilters = useCallback(async (filters: FiltersType) => {
+    setLoading(true);
+
+    await setFilters(filters);
+
+    setSelectedFilters(filters);
+
+    loadBudgets();
+
+    setLoading(false);
+  }, []);
+
+  const onResetFilters = useCallback(async () => {
+    setLoading(true);
+
+    await setFilters(undefined);
+
+    setSelectedFilters(undefined);
 
     loadBudgets();
 
@@ -148,6 +178,9 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
         onDuplicateBudget,
         selectedService,
         onSelectService,
+        onApplyFilters,
+        selectedFilters,
+        onResetFilters,
       }}
     >
       {children}

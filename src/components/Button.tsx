@@ -1,11 +1,11 @@
-import { colors, fontFamily } from "@/theme";
-import { MaterialIcons } from "@expo/vector-icons";
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { colors, fontFamily } from "@/theme";
 
 type ButtonProps = TouchableOpacityProps & {
   icon?: keyof typeof MaterialIcons.glyphMap;
@@ -49,7 +49,8 @@ export function Button({ icon, text, variant, ...props }: ButtonProps) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 48,
+    height: 50,
+    minWidth: 50,
     borderRadius: 50,
     padding: 12,
     flexDirection: "row",

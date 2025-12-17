@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -7,14 +7,28 @@ import { colors } from "@/theme";
 import { Button, InputText } from "@/components";
 import { BudgetCard, FilterModal } from "./components";
 import { useBudgets } from "@/context/BudgetContext";
+import { debounce } from "@/utils/debounce";
 
 export function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const { budgets, onSelectBudget } = useBudgets();
+  const { budgets, onSelectBudget, selectedFilters, onApplyFilters } =
+    useBudgets();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<StackRoutesList, "home">>();
+
+  const debouncedSetValue = useCallback(
+    debounce((value: string) => {
+      onApplyFilters({ ...selectedFilters, search: value ?? null });
+    }, 1000),
+    [selectedFilters]
+  );
+
+  function handleIputChange(value: string) {
+
+    debouncedSetValue(value);
+  }
 
   function handleSelectBudget(id: string) {
     onSelectBudget(id);
@@ -24,9 +38,13 @@ export function Home() {
   return (
     <View style={styles.container}>
       <View style={styles.filters}>
-        <InputText icon="search" placeholder="Título ou Cliente" />
+        <InputText
+          icon="search"
+          placeholder="Título ou Cliente"
+          onChangeText={handleIputChange}
+        />
         <Button
-          variant="secondary"
+          variant={selectedFilters ? "primary" : "secondary"}
           icon="tune"
           onPress={() => setIsOpenModal(true)}
         />

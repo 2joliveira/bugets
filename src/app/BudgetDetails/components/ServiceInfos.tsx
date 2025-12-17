@@ -1,4 +1,4 @@
-import { ServiceType } from "@/app/Budget";
+import { ServiceType } from "@/domain/service.schema";
 import { colors, fontFamily } from "@/theme";
 import { formatPrice } from "@/utils/formatPrice";
 import { StyleSheet, Text, View } from "react-native";

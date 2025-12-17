@@ -1,9 +1,7 @@
-import { STATUS_OPTIONS } from "@/app";
-import { colors, fontFamily } from "@/theme";
-import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
-
-type StatusType = (typeof STATUS_OPTIONS)[number];
+import { MaterialIcons } from "@expo/vector-icons";
+import { colors, fontFamily } from "@/theme";
+import { StatusType } from "@/types";
 
 export function StatusTag({ status }: { status: StatusType }) {
   const status_info = {

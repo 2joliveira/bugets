@@ -1,11 +1,10 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { colors } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import { OrderOptionValue } from "@/app/Home/components/FilterModal";
 
 interface InputCheckBoxProps {
   option: string;
-  selectedOption: string | null;
+  selectedOption: string | undefined;
   setOption: (option: string) => void;
   children: React.ReactNode;
 }

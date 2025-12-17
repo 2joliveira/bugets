@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackRoutesList } from "@/routes/StackRoutes";
-import { STATUS_OPTIONS, useBudgets } from "@/context/BudgetContext";
+import { useBudgets } from "@/context/BudgetContext";
 import { colors, fontFamily } from "@/theme";
 import { Button, InputRadio, InputText, StatusTag } from "@/components";
 import {
@@ -16,6 +16,7 @@ import {
   ServiceModal,
 } from "./components";
 import { budgetSchema, BudgetType } from "@/domain/budget.schema";
+import { STATUS_OPTIONS } from "@/types";
 
 export function Budget() {
   const [isOpenModal, setIsOpenModal] = useState(false);
