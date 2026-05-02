@@ -14,6 +14,7 @@ import { colors, fontFamily } from "@/theme";
 import { useBudgets } from "@/context/BudgetContext";
 import { BudgetType } from "@/domain/budget.schema";
 import { serviceSchema, ServiceType } from "@/domain/service.schema";
+import { InputCurrency } from "@/components/InputCurrency";
 
 interface FilterModalProps {
   visible: boolean;
@@ -122,15 +123,12 @@ export function ServiceModal({
               control={control}
               name="price"
               render={({ field: { value, onChange } }) => (
-                <InputText
+                <InputCurrency
                   placeholder="Preço"
                   keyboardType="decimal-pad"
-                  inputMode="decimal"
                   style={{ width: 250 }}
-                  value={String(value)}
-                  onChangeText={(text) =>
-                    onChange(Number(text.replace(/\D/g, "")))
-                  }
+                  value={value}
+                  onChangeValue={onChange}
                   error={errors.price?.message}
                 />
               )}
@@ -211,7 +209,7 @@ export function ServiceModal({
 const styles = StyleSheet.create({
   modalContent: {
     padding: 20,
-    gap: 20,
+    gap: 15,
   },
   priceQuantityContainer: {
     flexDirection: "row",
@@ -233,7 +231,7 @@ const styles = StyleSheet.create({
     color: colors.gray[700],
   },
   footer: {
-    marginTop: 80,
+    marginTop: 60,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
