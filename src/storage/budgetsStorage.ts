@@ -31,7 +31,7 @@ export async function getBudgets(): Promise<BudgetType[]> {
       );
     }
 
-    if (storage?.filters?.search !== "") {
+    if (storage?.filters?.search) {
       acc = acc?.filter?.(
         (budget) =>
           budget.title.includes(storage.filters.search)

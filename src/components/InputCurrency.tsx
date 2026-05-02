@@ -1,22 +1,23 @@
 import { colors } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import Input, { CurrencyInputProps } from 'react-native-currency-input'
 import { Error } from "./Error";
 import { useState } from "react";
 
-type InputTextProps = TextInputProps & {
+type InputCurrencyProps = CurrencyInputProps & {
   icon?: keyof typeof MaterialIcons.glyphMap;
   error?: string;
 };
 
-export function InputText({
+export function InputCurrency({
   icon,
   placeholder,
   placeholderTextColor,
   style,
   error,
   ...props
-}: InputTextProps) {
+}: InputCurrencyProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -29,7 +30,7 @@ export function InputText({
       ]}
     >
       {icon && <MaterialIcons name={icon} size={20} color={colors.gray[500]} />}
-      <TextInput
+      <Input
         placeholder={placeholder}
         placeholderTextColor={colors.gray[500]}
         style={{ width: icon ? "76%" : "100%" }}
